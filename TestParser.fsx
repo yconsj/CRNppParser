@@ -1,98 +1,111 @@
 #r "nuget: FParsec, 1.1.1"
 open FParsec
-type SPECIES = S of string
+type Species = string
+type Number = float
+
+type ModuleS =
+    | ADD of Species * Species * Species
+    | SUB of Species * Species * Species
+    | CMP of Species * Species
 
 
-type MODULE = ADD of SPECIES*SPECIES*SPECIES | SUB of SPECIES* SPECIES * SPECIES | MUL of SPECIES* SPECIES* SPECIES | DIV of SPECIES*SPECIES*SPECIES
-type COMMAND = MODULE
-type COMMANDLIST = COMMAND | CMDLIST of COMMAND * COMMANDLIST
+type CommandS = ModuleS of ModuleS
 
-let (pCrn, pCrnRef) = createParserForwardedToRef<MODULE,unit>() 
+and CommandSopt =
+    | Comma of CommandS * CommandSopt
+    | Empty
+
+type StepS = CommandS * CommandSopt
+
+type ConcS = Species * Number
+
+type RootS =
+    | StepS of StepS
+    | ConcS of ConcS
 
 
- 
-let token p = p.>> spaces
+
+let (pCrn, pCrnRef) = createParserForwardedToRef<RootS, unit> ()
+
+
+
+let token p = p .>> spaces
 let symbol s = token (pstring s)
 
-let ident = 
-        let charOrDigit c = isLetter c || isDigit c 
-        spaces >>. token(many1Satisfy2L isLetter charOrDigit "identifier")   
+let ident =
+    let charOrDigit c = isLetter c || isDigit c
+    spaces >>. token (many1Satisfy2L isLetter charOrDigit "identifier")
 
 
-let values1 = parse{
-                let! a = ident
-                let! _ = symbol ","
-                let! b = ident
-                return (a,b)
-                }
-let bValues1 = pstring "[" >>. values1 .>> pstring "]"
+let betweenBrackets p = between (pstring "[") (pstring "]") p
 
-let values2 = parse{
-                let! a = ident
-                let! _ = symbol ","
-                let! b = ident
-                return (a,b)
-                }
-let bValues2 = pstring "[" >>. values2 .>> pstring "]"
+let commaSeparated2 p1 p2 = tuple2 p1 (pchar ',' >>. spaces >>. p2)
 
-let values3 = parse{
-                let! a = ident
-                let! _ = symbol ","
-                let! b = ident
-                let! _ = symbol ","
-                let! c = ident
-                return (a,b,c)
-                }
-let bValues3 = pstring "[" >>. values3 .>> pstring "]"
-let pAdd = parse{
-                let! _ = symbol "Add"
-                let! (a,b,c) = bValues3
-                if (a=c) || (c=b) then fail "error add" 
-                else 
+let commaSeparated3 p1 p2 p3 =
+    tuple3 p1 (pchar ',' >>. spaces >>. p2) (pchar ',' >>. spaces >>. p3)
 
-                    return ADD(S a,S b,S c)
-            }
-let pSub = parse{
-                let! _ = symbol "Sub"
-                let! (a,b,c) = bValues3
-                if (a=c) || (c=b) then fail "error sub" 
-                else 
+let pAdd =
+    spaces
+    >>. pstring "add"
+    >>. spaces
+    >>. betweenBrackets (commaSeparated3 ident ident ident)
+    |>> fun (s1, s2, s3) -> ADD(s1, s2, s3)
 
-                    return SUB(S a,S b,S c)
-            }
+let pSub =
+    spaces
+    >>. pstring "sub"
+    >>. spaces
+    >>. betweenBrackets (commaSeparated3 ident ident ident)
+    |>> fun (s1, s2, s3) -> SUB(s1, s2, s3)
 
-let pMul = parse{
-                let! _ = symbol "Mul"
-                let! (a,b,c) = bValues3
-                if (a=c) || (c=b) then fail "error mul" 
-                else 
+let pCmp =
+    spaces
+    >>. pstring "cmp"
+    >>. spaces
+    >>. betweenBrackets (commaSeparated2 ident ident)
+    |>> fun (s1, s2) -> CMP(s1, s2)
 
-                    return MUL(S a,S b,S c)
-            }
-let pDiv = parse{
-                let! _ = symbol "Div"
-                let! (a,b,c) = bValues3
-                if (a=c) || (c=b) then fail "error div" 
-                else 
+let pModuleS =
+    choice [ attempt pCmp; attempt pSub; attempt pAdd ] |>> fun (arith) -> arith
 
-                    return DIV(S a,S b,S c)
-            }
-let pModule = spaces >>. (pAdd <|> pSub)
+let pCommandS =
+    choice [ spaces >>. pModuleS .>> spaces ] |>> fun (mod) -> ModuleS (mod)
 
-let pCommand = pModule
+let pCommandSopt =
 
-let pSpecies = parse{
-                let! x = ident
-                return (x)
-                }
-pCrnRef.Value <- parse {
-            let! x  = pModule
-            return x
-        }
-"A+B+C"
-"ADD(A,B,C)"
+    let rec helper l =
+        match l with
+        | x :: [] -> Comma(x, Empty)
+        | x :: y -> Comma(x, helper y)
+        | _ -> Empty
+
+    sepBy pCommandS (skipString ",") |>> fun l -> helper l
+
+let pStepS =
+    (pstring "step")
+    >>. betweenBrackets (
+        choice
+            [ (attempt (pCommandS .>> (skipChar ',') .>>. pCommandSopt)
+               |>> fun (x, y) -> StepS(x, y))
+              attempt (pCommandS) |>> fun x -> StepS(x, Empty) ]
+    )
+
+let pConcS =
+    (pstring "conc")
+    >>. betweenBrackets ((spaces >>. ident .>> spaces .>> pchar ',') .>>. (spaces >>. pfloat .>> spaces))
+    |>> fun (species, number) -> ConcS(species, number)
+
+let pRootS = choice [ attempt pConcS; attempt pStepS ] |>> fun x -> x
+
+pCrnRef.Value <-
+    parse {
+        let! x = pRootS
+        return x
+    }
+
 let test p str =
     match run p str with
-    | Success(result, _, _)   -> printfn "Success: %A" result
+    | Success(result, _, _) -> printfn "Success: %A" result
     | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
-test pCrn " Sub [A,B,C]"
+
+test pCrn "step[  add [A,B,C]]"
