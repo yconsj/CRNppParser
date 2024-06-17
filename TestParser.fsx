@@ -8,25 +8,20 @@ type ModuleS =
     | SUB of Species * Species * Species
     | CMP of Species * Species
 
+and CommandS =
+    | CommandNested of CommandS * CommandS
+    | ModuleS of ModuleS
 
-type CommandS = ModuleS of ModuleS
-
-and CommandSopt =
-    | Comma of CommandS * CommandSopt
-    | Empty
-
-type StepS = CommandS * CommandSopt
+type StepS = CommandS
 
 type ConcS = Species * Number
 
 type RootS =
+    | RootNested of RootS * RootS
     | StepS of StepS
     | ConcS of ConcS
 
-
-
 let (pCrn, pCrnRef) = createParserForwardedToRef<RootS, unit> ()
-
 
 
 let token p = p .>> spaces
@@ -38,6 +33,8 @@ let ident =
 
 
 let betweenBrackets p = between (pstring "[") (pstring "]") p
+let betweenCurlyBrackets p = between (pstring "{") (pstring "}") p
+
 
 let commaSeparated2 p1 p2 = tuple2 p1 (pchar ',' >>. spaces >>. p2)
 
@@ -71,23 +68,24 @@ let pModuleS =
 let pCommandS =
     choice [ spaces >>. pModuleS .>> spaces ] |>> fun (mod) -> ModuleS (mod)
 
-let pCommandSopt =
+let rec pCommandSopt (e : CommandS) =
+    parse { let! _ = pstring ","
+            let! e' = pCommandS
+            return! pCommandSopt(CommandNested(e, e'))} 
+    <|> preturn e
+ 
+let pCommandSList =
+    parse {let! e = pCommandS
+        return! pCommandSopt e}
 
-    let rec helper l =
-        match l with
-        | x :: [] -> Comma(x, Empty)
-        | x :: y -> Comma(x, helper y)
-        | _ -> Empty
-
-    sepBy pCommandS (skipString ",") |>> fun l -> helper l
 
 let pStepS =
     (pstring "step")
     >>. betweenBrackets (
         choice
-            [ (attempt (pCommandS .>> (skipChar ',') .>>. pCommandSopt)
-               |>> fun (x, y) -> StepS(x, y))
-              attempt (pCommandS) |>> fun x -> StepS(x, Empty) ]
+            [ (attempt (pCommandS .>> (skipChar ',') .>>. pCommandSList)
+               |>> fun (x, y) -> StepS(CommandNested(x, y)))
+              attempt (pCommandS) |>> fun x -> StepS(x) ]
     )
 
 let pConcS =
@@ -97,9 +95,23 @@ let pConcS =
 
 let pRootS = choice [ attempt pConcS; attempt pStepS ] |>> fun x -> x
 
+let rec pRootsOpt (e : RootS) =
+    parse { let! _ = pstring ","
+            let! e' = pRootS
+            return! pRootsOpt(RootNested(e, e'))} 
+    <|> preturn e
+ 
+let pRootSList =
+    parse {let! e = pRootS
+        return! pRootsOpt e}
+
+
 pCrnRef.Value <-
     parse {
-        let! x = pRootS
+        // let! x = pRootS
+        let! x =
+            (pstring "crn= ") 
+            >>. (betweenCurlyBrackets pRootSList)
         return x
     }
 
@@ -108,4 +120,5 @@ let test p str =
     | Success(result, _, _) -> printfn "Success: %A" result
     | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
 
-test pCrn "step[  add [A,B,C]]"
+test pCrn "crn= {step[  add [A,B,C]]}"
+test pCrn "crn= {step[  add [A,B,C], cmp[ A, C], sub [B,C,A] ]}"
