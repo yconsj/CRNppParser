@@ -9,23 +9,32 @@ type ModuleS =
     | CMP of Species * Species
 
 
-type CommandS = ModuleS of ModuleS
+type CommandS =
+    | Module of ModuleS
+    | Conditional of ConditionalS
 
-and CommandSopt =
-    | Comma of CommandS * CommandSopt
-    | Empty
+and ConditionalS = IfGT of CommandSList
 
-type StepS = CommandS * CommandSopt
+and CommandSList =
+    | Cmd of CommandS * CommandSList
+    | CEnd
+
+type StepS = CommandS * CommandSList
 
 type ConcS = Species * Number
 
 type RootS =
-    | StepS of StepS
-    | ConcS of ConcS
+    | Step of StepS
+    | Conc of ConcS
+
+type RootSList =
+    | Root of RootS * RootSList
+    | REnd
+
+type Crn = Crn of RootSList
 
 
-
-let (pCrn, pCrnRef) = createParserForwardedToRef<RootS, unit> ()
+let (pCrn, pCrnRef) = createParserForwardedToRef<Crn, unit> ()
 
 
 
@@ -38,6 +47,9 @@ let ident =
 
 
 let betweenBrackets p = between (pstring "[") (pstring "]") p
+
+let betweenCurlyBrackets p =
+    between (pstring "{" >>. spaces) (spaces >>. pstring "}") p
 
 let commaSeparated2 p1 p2 = tuple2 p1 (pchar ',' >>. spaces >>. p2)
 
@@ -69,15 +81,15 @@ let pModuleS =
     choice [ attempt pCmp; attempt pSub; attempt pAdd ] |>> fun (arith) -> arith
 
 let pCommandS =
-    choice [ spaces >>. pModuleS .>> spaces ] |>> fun (mod) -> ModuleS (mod)
+    choice [ spaces >>. pModuleS .>> spaces ] |>> fun (mod) -> Module (mod)
 
-let pCommandSopt =
+let pCommandSList =
 
     let rec helper l =
         match l with
-        | x :: [] -> Comma(x, Empty)
-        | x :: y -> Comma(x, helper y)
-        | _ -> Empty
+        | x :: [] -> Cmd(x, CEnd)
+        | x :: y -> Cmd(x, helper y)
+        | _ -> CEnd
 
     sepBy pCommandS (skipString ",") |>> fun l -> helper l
 
@@ -85,22 +97,39 @@ let pStepS =
     (pstring "step")
     >>. betweenBrackets (
         choice
-            [ (attempt (pCommandS .>> (skipChar ',') .>>. pCommandSopt)
-               |>> fun (x, y) -> StepS(x, y))
-              attempt (pCommandS) |>> fun x -> StepS(x, Empty) ]
+            [ (attempt (pCommandS .>> (skipChar ',') .>>. pCommandSList)
+               |>> fun (x, y) -> Step(x, y))
+              attempt (pCommandS) |>> fun x -> Step(x, CEnd) ]
     )
 
 let pConcS =
     (pstring "conc")
     >>. betweenBrackets ((spaces >>. ident .>> spaces .>> pchar ',') .>>. (spaces >>. pfloat .>> spaces))
-    |>> fun (species, number) -> ConcS(species, number)
+    |>> fun (species, number) -> Conc(species, number)
 
 let pRootS = choice [ attempt pConcS; attempt pStepS ] |>> fun x -> x
 
+let pRootSList =
+
+    let rec helper l =
+        match l with
+        | x :: [] -> Root(x, REnd)
+        | x :: y -> Root(x, helper y)
+        | _ -> REnd
+
+    sepBy pRootS (skipString ",") |>> fun l -> helper l
+
+
 pCrnRef.Value <-
     parse {
-        let! x = pRootS
-        return x
+        let! x =
+            pstring "crn"
+            >>. spaces
+            >>. pstring "="
+            >>. spaces
+            >>. betweenCurlyBrackets (pRootSList)
+
+        return Crn(x)
     }
 
 let test p str =
@@ -108,4 +137,4 @@ let test p str =
     | Success(result, _, _) -> printfn "Success: %A" result
     | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
 
-test pCrn "step[  add [A,B,C]]"
+test pCrn "crn = { conc[A,2],  conc[A,2]} "
