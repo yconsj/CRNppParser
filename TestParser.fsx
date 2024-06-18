@@ -15,21 +15,19 @@ type CommandS =
 
 and ConditionalS = IfGT of CommandSList
 
-and CommandSList =
-    | Cmd of CommandS * CommandSList
-    | CEnd
+and CommandSList = CommandList of CommandS list
 
-type StepS = CommandS * CommandSList
+type StepS = Step of CommandSList
 
-type ConcS = Species * Number
+type ConcS = Conc of Species * Number
 
 type RootS =
-    | Step of StepS
-    | Conc of ConcS
+    | RootStep of StepS
+    | RootConc of ConcS
 
-type RootSList =
-    | Root of RootS * RootSList
-    | REnd
+
+type RootSList = RootList of RootS list
+
 
 type Crn = Crn of RootSList
 
@@ -83,41 +81,26 @@ let pModuleS =
 let pCommandS =
     choice [ spaces >>. pModuleS .>> spaces ] |>> fun (mod) -> Module (mod)
 
+
 let pCommandSList =
-
-    let rec helper l =
-        match l with
-        | x :: [] -> Cmd(x, CEnd)
-        | x :: y -> Cmd(x, helper y)
-        | _ -> CEnd
-
-    sepBy pCommandS (skipString ",") |>> fun l -> helper l
+      sepBy1 pCommandS (spaces >>. skipString "," >>. spaces) |>> fun l -> CommandList(l)
 
 let pStepS =
-    (pstring "step")
-    >>. betweenBrackets (
-        choice
-            [ (attempt (pCommandS .>> (skipChar ',') .>>. pCommandSList)
-               |>> fun (x, y) -> Step(x, y))
-              attempt (pCommandS) |>> fun x -> Step(x, CEnd) ]
-    )
+    (pstring "step") >>. betweenBrackets (pCommandSList) |>> fun x -> Step(x)
 
 let pConcS =
     (pstring "conc")
     >>. betweenBrackets ((spaces >>. ident .>> spaces .>> pchar ',') .>>. (spaces >>. pfloat .>> spaces))
     |>> fun (species, number) -> Conc(species, number)
 
-let pRootS = choice [ attempt pConcS; attempt pStepS ] |>> fun x -> x
+let pRootS =
+    choice
+        [ attempt pConcS |>> fun x -> RootConc(x)
+          attempt pStepS |>> fun x -> RootStep(x) ]
 
 let pRootSList =
 
-    let rec helper l =
-        match l with
-        | x :: [] -> Root(x, REnd)
-        | x :: y -> Root(x, helper y)
-        | _ -> REnd
-
-    sepBy pRootS (skipString ",") |>> fun l -> helper l
+    sepBy1 pRootS (spaces >>. skipString "," >>. spaces) |>> fun l -> RootList(l)
 
 
 pCrnRef.Value <-
@@ -137,4 +120,4 @@ let test p str =
     | Success(result, _, _) -> printfn "Success: %A" result
     | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
 
-test pCrn "crn = { conc[A,2],  conc[A,2]} "
+test pCrn "crn = { conc[A,2],  conc[A,2], step[add[A,B,C]]} "
