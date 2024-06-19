@@ -1,16 +1,17 @@
+module Parser
 #r "nuget: FParsec, 1.1.1"
 open FParsec
 type Species = string
 type Number = float
 
 type ModuleS =
-    | ADD of Species * Species * Species
+    | ADD of Species * Species * Species 
     | SUB of Species * Species * Species
     | CMP of Species * Species
 
 
 type CommandS =
-    | Module of ModuleS
+    | Module of ModuleS 
     | Conditional of ConditionalS
 
 and ConditionalS = IfGT of CommandSList
@@ -119,5 +120,10 @@ let test p str =
     match run p str with
     | Success(result, _, _) -> printfn "Success: %A" result
     | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
+let extract p str =
+    match run pCrn str with
+    | Success(result, _, _) -> result
+    | Failure(errorMsg, _, _) -> Crn(RootList([]))
 
-test pCrn "crn = { conc[A,2],  conc[A,2], step[add[A,B,C]]} "
+
+//test pCrn "crn = { conc[A,2],  conc[A,2], step[add[A,B,C]]} "
