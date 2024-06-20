@@ -1,11 +1,11 @@
-C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\obj\Debug\net7.0\CRNppInterpreter.fsproj.AssemblyReference.cache
-C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\obj\Debug\net7.0\CRNppInterpreter.AssemblyInfoInputs.cache
-C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\obj\Debug\net7.0\CRNppInterpreter.AssemblyInfo.fs
-C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\obj\Debug\net7.0\CRNppInterpreter.fsproj.CoreCompileInputs.cache
 C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\Library\net7.0\CRNppInterpreter.deps.json
 C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\Library\net7.0\CRNppInterpreter.dll
 C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\Library\net7.0\CRNppInterpreter.pdb
 C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\Library\net7.0\CRNppInterpreter.xml
+C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\obj\Debug\net7.0\CRNppInterpreter.fsproj.AssemblyReference.cache
+C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\obj\Debug\net7.0\CRNppInterpreter.AssemblyInfoInputs.cache
+C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\obj\Debug\net7.0\CRNppInterpreter.AssemblyInfo.fs
+C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\obj\Debug\net7.0\CRNppInterpreter.fsproj.CoreCompileInputs.cache
 C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\obj\Debug\net7.0\CRNppInterpreter.dll
 C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\obj\Debug\net7.0\refint\CRNppInterpreter.dll
 C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNppInterpreter\obj\Debug\net7.0\CRNppInterpreter.xml
