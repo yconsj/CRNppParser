@@ -137,7 +137,8 @@ module Parser =
               pModuleS .>> spaces |>> fun (mod) -> Module (mod) ]
 
     let pCommandSListImpl =
-        sepBy1 pCommandS (spaces >>. skipString "," >>. spaces) |>> fun l -> l
+        sepBy1 pCommandS (spaces >>. skipString "," >>. spaces)
+        |>> fun l -> l
 
     pCommandSListRef.Value <- pCommandSListImpl
 
@@ -154,7 +155,7 @@ module Parser =
 
     let pRootS =
         spaces
-        >>. choice [ (pConcS |>> fun x -> Conc(x)); (pStepS |>> fun x -> Step(x)) ]
+        >>. choice [ (pConcS |>> fun x -> x); (pStepS |>> fun x -> x) ]
         .>> spaces
 
     let pRootSList =
