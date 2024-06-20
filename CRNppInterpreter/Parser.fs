@@ -128,7 +128,8 @@ module Parser =
             [ pIfGT |>> fun x -> x
               pIfEQ |>> fun x -> x
               pIfLT |>> fun x -> x
-              pIfLE |>> fun x -> x ]
+              pIfLE |>> fun x -> x
+              pIfGE |>> fun x -> x ]
 
     let pCommandS =
         spaces
@@ -174,3 +175,8 @@ module Parser =
 
             return CRN(x)
         }
+
+    let parseCrn str =
+        match run pCrn str with
+        | Success(result, _, _) -> result
+        | Failure(errorMsg, _, _) -> failwith errorMsg

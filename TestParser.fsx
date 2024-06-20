@@ -1,4 +1,5 @@
 module Parser
+
 #r "nuget: FParsec, 1.1.1"
 open FParsec
 type Species = string
@@ -15,7 +16,7 @@ type ModuleS =
 
 
 type CommandS =
-    | Module of ModuleS 
+    | Module of ModuleS
     | Conditional of ConditionalS
 
 and ConditionalS =
@@ -174,6 +175,12 @@ pCrnRef.Value <-
         return CRN(x)
     }
 
+
+let parseCrn str =
+    match run pCrn str with
+    | Success(result, _, _) -> result
+    | Failure(errorMsg, _, _) -> failwith errorMsg
+
 let test p str =
     match run p str with
     | Success(result, _, _) -> printfn "Success: %A" result
@@ -194,4 +201,4 @@ let testProgram =
             ifGT[ ld [cnext ,c] ],
              ifLE[ ld [ cInitial ,c] ]
              ] }
-    ""
+    "

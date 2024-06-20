@@ -1,11 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "SqS0yuMbD0hnlP4xXUtwQgaNUsJw4MTOCqIG5NnoVr3kwoPZDvxniE1Aa2KhYZSfKG63V/HhwtTN8n0wtp6elg==",
+  "dgSpecHash": "FC2o/v3mEeVzUNynlQIN4cUH06iJPVxPgrl47DIM7+YA96yL4LvQ5e91t24BBKn7mGbHo0xS9JhBsPvjG2iPuw==",
   "success": true,
   "projectFilePath": "C:\\Users\\simon\\OneDrive\\DTU\\Kandidat\\Applied Functional Programming\\CRNppParser\\CRNppInterpreter\\CRNppInterpreter.fsproj",
   "expectedPackageFiles": [
+    "C:\\Users\\simon\\.nuget\\packages\\dynamicobj\\2.0.0\\dynamicobj.2.0.0.nupkg.sha512",
     "C:\\Users\\simon\\.nuget\\packages\\fparsec\\1.1.1\\fparsec.1.1.1.nupkg.sha512",
-    "C:\\Users\\simon\\.nuget\\packages\\fsharp.core\\7.0.400\\fsharp.core.7.0.400.nupkg.sha512"
+    "C:\\Users\\simon\\.nuget\\packages\\fsharp.core\\7.0.200\\fsharp.core.7.0.200.nupkg.sha512",
+    "C:\\Users\\simon\\.nuget\\packages\\giraffe.viewengine\\1.4.0\\giraffe.viewengine.1.4.0.nupkg.sha512",
+    "C:\\Users\\simon\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\simon\\.nuget\\packages\\plotly.net\\4.0.0\\plotly.net.4.0.0.nupkg.sha512"
   ],
   "logs": []
 }
