@@ -1,4 +1,4 @@
-﻿namespace Interperter
+﻿namespace Interpreter
 
 module Parser =
     open FParsec

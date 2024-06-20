@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "1rfmGp7k9VyoDFpKjPkhqLN7fuDKH7La5SPRtMA2AgOKL1rLp2lILtmUvZJANsJKxNrz42E4uJemHWDcSE47kQ==",
+  "dgSpecHash": "SqS0yuMbD0hnlP4xXUtwQgaNUsJw4MTOCqIG5NnoVr3kwoPZDvxniE1Aa2KhYZSfKG63V/HhwtTN8n0wtp6elg==",
   "success": true,
   "projectFilePath": "C:\\Users\\simon\\OneDrive\\DTU\\Kandidat\\Applied Functional Programming\\CRNppParser\\CRNppInterpreter\\CRNppInterpreter.fsproj",
   "expectedPackageFiles": [
     "C:\\Users\\simon\\.nuget\\packages\\fparsec\\1.1.1\\fparsec.1.1.1.nupkg.sha512",
-    "C:\\Users\\simon\\.nuget\\packages\\fsharp.core\\7.0.200\\fsharp.core.7.0.200.nupkg.sha512"
+    "C:\\Users\\simon\\.nuget\\packages\\fsharp.core\\7.0.400\\fsharp.core.7.0.400.nupkg.sha512"
   ],
   "logs": []
 }

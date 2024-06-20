@@ -9,7 +9,7 @@
       "CRNppInterpreter/1.0.0": {
         "dependencies": {
           "FParsec": "1.1.1",
-          "FSharp.Core": "7.0.200"
+          "FSharp.Core": "7.0.400"
         },
         "runtime": {
           "CRNppInterpreter.dll": {}
@@ -17,7 +17,7 @@
       },
       "FParsec/1.1.1": {
         "dependencies": {
-          "FSharp.Core": "7.0.200"
+          "FSharp.Core": "7.0.400"
         },
         "runtime": {
           "lib/netstandard2.0/FParsec.dll": {
@@ -30,11 +30,11 @@
           }
         }
       },
-      "FSharp.Core/7.0.200": {
+      "FSharp.Core/7.0.400": {
         "runtime": {
           "lib/netstandard2.1/FSharp.Core.dll": {
             "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.2.23.6902"
+            "fileVersion": "7.4.23.36405"
           }
         },
         "resources": {
@@ -94,12 +94,12 @@
       "path": "fparsec/1.1.1",
       "hashPath": "fparsec.1.1.1.nupkg.sha512"
     },
-    "FSharp.Core/7.0.200": {
+    "FSharp.Core/7.0.400": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-NmgUnpNH6Zu9B0SPIhojyo38gnPdkdYFYQfbd6zosEH32kbGY/g/Klk7PfOWe1NAe/O1YOMmK9KhwQ2OWsWEbg==",
-      "path": "fsharp.core/7.0.200",
-      "hashPath": "fsharp.core.7.0.200.nupkg.sha512"
+      "sha512": "sha512-kJQ7TBQqd1d2VoODSgwFSAaApaBN0Fuu8mZt2XExmd3UzUxLjUsMn5Y5XhpsUWdnxOL8amp7VFg7cwhPllR4Qw==",
+      "path": "fsharp.core/7.0.400",
+      "hashPath": "fsharp.core.7.0.400.nupkg.sha512"
     }
   }
 }
