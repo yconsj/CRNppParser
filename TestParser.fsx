@@ -195,5 +195,3 @@ let testProgram =
              ifLE[ ld [ cInitial ,c] ]
              ] }
                 "
-
-test pCrn testProgram
