@@ -3,7 +3,7 @@
 
 open Plotly.NET
 open Plotly.NET.LayoutObjects // this namespace contains all object abstractions for layout styling
-open Interperter.Parser
+open Interpreter.Parser
 
 
 type State = Map<Species, Number>

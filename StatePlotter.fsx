@@ -2,7 +2,7 @@
 #r "nuget: Plotly.NET, 4.0.0"
 //#r "nuget: FParsec, 1.1.1"
 //open FParsec
-open Interperter.Parser
+open Interpreter.Parser
 open Plotly.NET
 open Plotly.NET.LayoutObjects
 

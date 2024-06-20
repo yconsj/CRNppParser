@@ -1,7 +1,7 @@
 //#r "CRNppInterpreter\\Parser.fs"
 #r "CRNppInterpreter\\Library\\net7.0\\CRNppInterpreter.dll"
 #r "nuget: FParsec, 1.1.1"
-open Interperter.Parser
+open Interpreter.Parser
 open FParsec
 
 /// TypeChecker:
