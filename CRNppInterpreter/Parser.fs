@@ -26,21 +26,21 @@ module Parser =
         | IfLT of CommandSList
         | IfLE of CommandSList
 
-    and CommandSList = CommandList of CommandS list
+    and CommandSList = CommandS list
 
-    type StepS = Step of CommandSList
+    type StepS = CommandSList
 
-    type ConcS = Conc of Species * Number
+    type ConcS = Species * Number
 
     type RootS =
-        | RootStep of StepS
-        | RootConc of ConcS
+        | Step of StepS
+        | Conc of ConcS
 
 
-    type RootSList = RootList of RootS list
+    type RootSList = RootS list
 
 
-    type Crn = Crn of RootSList
+    type Crn = CRN of RootSList
 
 
     let (pCrn, pCrnRef) = createParserForwardedToRef<Crn, unit> ()
@@ -137,31 +137,29 @@ module Parser =
               pModuleS .>> spaces |>> fun (mod) -> Module (mod) ]
 
     let pCommandSListImpl =
-        sepBy1 pCommandS (spaces >>. skipString "," >>. spaces)
-        |>> fun l -> CommandList(l)
+        sepBy1 pCommandS (spaces >>. skipString "," >>. spaces) |>> fun l -> l
 
     pCommandSListRef.Value <- pCommandSListImpl
 
 
 
     let pStepS =
-        (pstring "step") >>. spaces >>. betweenBrackets (pCommandSList)
-        |>> fun x -> Step(x)
+        (pstring "step") >>. spaces >>. betweenBrackets (pCommandSList) |>> fun x -> x
 
     let pConcS =
         (pstring "conc")
         >>. spaces
         >>. betweenBrackets ((spaces >>. ident .>> spaces .>> pchar ',') .>>. (spaces >>. pfloat .>> spaces))
-        |>> fun (species, number) -> Conc(species, number)
+        |>> fun (species, number) -> (species, number)
 
     let pRootS =
         spaces
-        >>. choice [ (pConcS |>> fun x -> RootConc(x)); (pStepS |>> fun x -> RootStep(x)) ]
+        >>. choice [ (pConcS |>> fun x -> Conc(x)); (pStepS |>> fun x -> Step(x)) ]
         .>> spaces
 
     let pRootSList =
 
-        sepBy1 pRootS (skipString ",") |>> fun l -> RootList(l)
+        sepBy1 pRootS (skipString ",") |>> fun l -> l
 
 
     pCrnRef.Value <-
@@ -174,5 +172,5 @@ module Parser =
                 >>. spaces
                 >>. betweenCurlyBrackets (pRootSList)
 
-            return Crn(x)
+            return CRN(x)
         }
