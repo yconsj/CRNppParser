@@ -12,6 +12,7 @@ open FParsec
 /// a conc cannot follow after StepS(?)
 /// protected symbols (such as XgtY, XltY), or just not allow names starting with e.g. underscore
 /// dont allow Conc on the same species multiple times.
+/// dont allow empty LHS on Rxn
 
 let lazyOptionSome opt1 opt2 =
     if Option.isSome opt1 then 

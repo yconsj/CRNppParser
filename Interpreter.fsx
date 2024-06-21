@@ -45,8 +45,6 @@ let ExecuteModule m (state: Map<Species, Number>) =
         | v1, v2 when v1 = v2 -> Map.add "_flag" 2 state
         | v1, v2 when v1 < v2 -> Map.add "_flag" 1 state
         | _ -> failwith "compare error between"
-    | _ -> state
-
 
 let rec step state (stp: StepS) =
     match stp with
@@ -64,6 +62,7 @@ and ExecuteConditional c (state: Map<Species, Number>) =
     | IfEQ(l) when flag = 2 -> step state l
     | IfLT(l) when flag = 1 -> step state l
     | IfLE(l) when flag = 1 || flag = 2 -> step state l
+    | _ -> state
 
 let rec steps state stps =
     match stps with
@@ -73,11 +72,10 @@ let rec steps state stps =
 
 let rec getSteps rootList =
     match rootList with
-    | Conc(x) :: t -> getSteps t
+    | Conc(_) :: t -> getSteps t
     | Step(x) :: [] -> [ x ]
     | Step(x) :: t -> x :: getSteps t
     | [] -> []
-    | _ -> failwith "Error getsteps"
 
 
 let rec helper cmdl state =
@@ -95,12 +93,14 @@ let rec helper cmdl state =
     | Module(CMP(a, b)) :: t ->
         let newState = Map.add "_flag" 0.0 (Map.add b 0.0 (Map.add a 0.0 state))
         helper t newState
+    | Conditional(IfGT(l)) :: t
     | Conditional(IfGE(l)) :: t
     | Conditional(IfEQ(l)) :: t
-    | Conditional(IfGE(l)) :: t
-    | Conditional(IfGT(l)) :: t ->
+    | Conditional(IfLE(l)) :: t
+    | Conditional(IfLT(l)) :: t ->
         let newState = helper l state
         helper t newState
+    | Rxn(x)::t -> failwith "rxn not implemented"
     | [] -> state
 
 let intializeVariables rootList =
@@ -117,7 +117,6 @@ let rec intializeConcentrations rootList state =
     | Conc(species, number) :: t -> intializeConcentrations t (Map.add species number state)
     | Step(x) :: t -> intializeConcentrations t state
     | [] -> state
-    | _ -> failwith "Error Intilize concentrations"
 
 
 let interpretProgram (programTree: Crn) =
@@ -130,11 +129,11 @@ let interpretProgram (programTree: Crn) =
     printfn "%A \n" s0
     let length = stps.Length
 
-    Seq.unfold
+    Seq.append (seq {s0}) (Seq.unfold
         (fun (index, state) ->
             let newState = step state (List.item (index % length) stps)
-            Some(newState, (index + 1) newState))
-        (0, s0)
+            Some(newState, (index + 1, newState)))
+        (0, s0))
 
 let testProgramTree =
     CRN[Conc("a", 2.0)
