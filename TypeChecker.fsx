@@ -91,13 +91,13 @@ let TypeChecker root =
             lazyOptionSome r (rootListHelper tail env)
 
     match root with
-    | Crn(rlist) -> rootListHelper rlist ((Map.empty, false) : Env)
+    | CRN(rlist) -> rootListHelper rlist ((Map.empty, false) : Env)
 
 
 let extract p str =
     match run pCrn str with
     | Success(result, _, _) -> result
-    | Failure(errorMsg, _, _) -> Crn([])
+    | Failure(errorMsg, _, _) -> CRN([])
 
 let program1 = extract pCrn "crn = { conc[A,2],  conc[A,2], step[add[A,B,C]]} "
 printfn "%A" (TypeChecker program1)
