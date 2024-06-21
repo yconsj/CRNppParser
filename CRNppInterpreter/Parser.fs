@@ -14,10 +14,13 @@ module Parser =
         | SQRT of Species * Species
         | CMP of Species * Species
 
+    type expr = Species List
+    type RxnS = expr * expr * Number
 
     type CommandS =
         | Module of ModuleS
         | Conditional of ConditionalS
+        | Rxn of RxnS
 
     and ConditionalS =
         | IfGT of CommandSList
@@ -48,7 +51,6 @@ module Parser =
     // Forward declaration of pCommandS and pCommandSList
 
     let pCommandSList, pCommandSListRef = createParserForwardedToRef ()
-
     let token p = p .>> spaces
     let symbol s = token (pstring s)
 
@@ -95,13 +97,19 @@ module Parser =
         pstring "cmp" >>. spaces >>. betweenBrackets (commaSeparated2 ident ident)
         |>> fun (s1, s2) -> CMP(s1, s2)
 
+    let pExpr =
+        spaces >>. sepBy1 ident (spaces >>. pstring "+" >>. spaces) |>> fun x -> x
+
+    let pRxnS =
+        spaces
+        >>. pstring "rxn"
+        >>. spaces
+        >>. betweenBrackets (commaSeparated3 pExpr pExpr pfloat)
+        |>> fun x -> x
 
     let pModuleS =
         spaces >>. choice [ pCmp; pSub; pAdd; pLd; pSqrt; pDiv; pMul ]
         |>> fun (arith) -> arith
-
-
-
 
     let pIfGT =
         spaces >>. pstring "ifGT" >>. spaces >>. betweenBrackets (pCommandSList)
@@ -135,7 +143,8 @@ module Parser =
         spaces
         >>. choice
             [ pConditionalS .>> spaces |>> fun cond -> Conditional(cond)
-              pModuleS .>> spaces |>> fun (mod) -> Module (mod) ]
+              pModuleS .>> spaces |>> fun (mod) -> Module (mod)
+              pRxnS .>> spaces |>> fun x -> Rxn(x) ]
 
     let pCommandSListImpl =
         sepBy1 pCommandS (spaces >>. skipString "," >>. spaces) |>> fun l -> l
