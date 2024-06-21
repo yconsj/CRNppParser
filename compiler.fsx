@@ -14,16 +14,58 @@ open Interpreter.Plotter
 // 14. Compile stp : Step, that is, a list of commands, to chemical reaction networks. (See
 // Table 1).
 
-let table1 m =
+let table1 m clockSpecies =
     match m with
-    | LD(A, B) -> [ Rxn([ A ], [ A; B ], 1); Rxn([ B ], [], 1) ]
-    | ADD(A, B, C) -> [ Rxn([ A ], [ A; C ], 1); Rxn([ B ], [ B; C ], 1); Rxn([ C ], [], 1) ]
-    | SUB(A, B, C) -> [] //TODO
-    | MUL(A, B, C) -> [ Rxn([ A; B ], [ A; B; C ], 1); Rxn([ C ], [], 1) ]
-    | DIV(A, B, C) -> [ Rxn([ A ], [ A; C ], 1); Rxn([ B; C ], [ B ], 1) ]
-    | SQRT(A, B) -> [ Rxn([ A ], [ A; B ], 1); Rxn([ B; B ], [], 0.5) ]
-    | CMP(A, B) -> [] // TODO
+    | LD(A, B) -> [ Rxn([clockSpecies; A ], [ clockSpecies; A; B ], 1)]
+                    @[Rxn([ clockSpecies; B ], [clockSpecies], 1) ]
+    | ADD(A, B, C) -> [ Rxn([ clockSpecies;A ], [ clockSpecies; A; C ], 1)]
+                      @[ Rxn([clockSpecies;  B ], [ clockSpecies; B; C ], 1)]
+                      @[ Rxn([ clockSpecies; C ], [clockSpecies], 1) ]
+    | SUB(A, B, C) -> 
+        let H = "_" + A + B + C
+        [ Rxn( [clockSpecies; A], [clockSpecies; A;C],1 ) ]
+        @[ Rxn( [clockSpecies; B], [clockSpecies; B; H], 1 ) ]
+        @[ Rxn([clockSpecies; C],[clockSpecies],1) ]
+        @[ Rxn([clockSpecies; C; H], [clockSpecies], 1)  ] //TODO
+    | MUL(A, B, C) -> [ Rxn([ clockSpecies; A; B ], [clockSpecies;  A; B; C ], 1)]
+                        @[ Rxn([clockSpecies;  C ], [clockSpecies], 1) ]
+    | DIV(A, B, C) -> [ Rxn([ clockSpecies; A ], [clockSpecies;  A; C ], 1)]
+                        @[ Rxn([clockSpecies;  B; C ], [ clockSpecies; B ], 1) ]
+    | SQRT(A, B) -> [ Rxn([ clockSpecies; A ], [clockSpecies;  A; B ], 1)]
+                     @[ Rxn([clockSpecies;  B; B ], [clockSpecies], 0.5) ]
+    | CMP(X, Y) -> 
+        // AgtB + B
+        let XgtY = "XgtY"
+        let XltY = "XltY"
+        let B = "_B"
+        [Rxn([XgtY;Y], [XltY;Y], 1)]
+        @[Rxn([XltY;X], [XgtY;X],1)]
 
-let compile stp =
+        // CRN8
+        @[Rxn([XgtY;XltY], [XltY;B],1)]
+        @[Rxn([B;XltY], [XltY;XltY],1)]
+        @[Rxn ([XltY;XgtY], [XgtY;B],1)]
+        @[Rxn ([B;XgtY], [XgtY;XgtY],1)]
+
+let rec compileStep stp clockSpecies =
     match stp with
-    | Module(x) :: t -> (table1 x) @ t
+    | [] -> []
+    | Module(x) :: t -> (table1 x clockSpecies) @ compileStep t clockSpecies
+
+let intilizeClockSpecies n =
+    let rec initializeClockSpecies' i n =
+        match i with
+        | i  when n = i-> [ Rxn(["_X" + n.ToString() ; "_X1"], ["_X1";"_X1"],1)]
+        | _ -> [ Rxn(["_X" + i.ToString(); "_X"+(i+1).ToString()], ["_X"+(i+1).ToString(); "_X"+(i+1).ToString()],1)] 
+                @ initializeClockSpecies' (i+1) n
+    initializeClockSpecies' 1 n 
+let compile stps =
+    let nSteps = List.length stps
+    let clockSpecies = intilizeClockSpecies (nSteps*3)
+    
+    let rec compileSteps stps' n =
+        match stps' with
+        | [] -> []
+        | stp::t -> compileStep stp ("_X" + n.ToString()) @ compileSteps t (n+3)
+
+    compileSteps stps
