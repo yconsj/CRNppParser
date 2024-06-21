@@ -14,8 +14,8 @@ module Parser =
         | SQRT of Species * Species
         | CMP of Species * Species
 
-    type expr = Species List
-    type RxnS = expr * expr * Number
+    type Expr = Species List
+    type RxnS = Expr * Expr * Number
 
     type CommandS =
         | Module of ModuleS
@@ -59,15 +59,17 @@ module Parser =
         spaces >>. token (many1Satisfy2L isLetter charOrDigit "identifier")
 
 
-    let betweenBrackets p = between (pstring "[") (pstring "]") p
+    let betweenBrackets p =
+        between (pstring "[") (spaces >>. pstring "]") p
 
     let betweenCurlyBrackets p =
         between (pstring "{") (spaces >>. pstring "}") p
 
-    let commaSeparated2 p1 p2 = tuple2 p1 (pchar ',' >>. spaces >>. p2)
+    let commaSeparated2 p1 p2 =
+        tuple2 (p1 .>> spaces) (pchar ',' >>. spaces >>. p2)
 
     let commaSeparated3 p1 p2 p3 =
-        tuple3 p1 (pchar ',' >>. spaces >>. p2) (pchar ',' >>. spaces >>. p3)
+        tuple3 (p1 .>> spaces) (pchar ',' >>. spaces >>. p2) (spaces >>. pchar ',' >>. spaces >>. p3)
 
     let pLd =
         pstring "ld" >>. spaces >>. betweenBrackets (commaSeparated2 ident ident)
@@ -98,7 +100,8 @@ module Parser =
         |>> fun (s1, s2) -> CMP(s1, s2)
 
     let pExpr =
-        spaces >>. sepBy1 ident (spaces >>. pstring "+" >>. spaces) |>> fun x -> x
+        spaces >>. betweenBrackets (sepBy ident (spaces >>. pstring "+" >>. spaces)) // can have 0 occurences
+        |>> fun x -> x
 
     let pRxnS =
         spaces
