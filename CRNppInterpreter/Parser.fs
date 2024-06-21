@@ -14,6 +14,8 @@ module Parser =
         | SQRT of Species * Species
         | CMP of Species * Species
 
+    type expr = Species List
+    type RxnS = Rxn of expr * expr * Number
 
     type CommandS =
         | Module of ModuleS
@@ -95,13 +97,19 @@ module Parser =
         pstring "cmp" >>. spaces >>. betweenBrackets (commaSeparated2 ident ident)
         |>> fun (s1, s2) -> CMP(s1, s2)
 
+    let pExpr =
+        spaces >>. sepBy1 ident (spaces >>. pstring "+" >>. spaces) |>> fun x -> x
+
+    let pRxnS =
+        spaces
+        >>. pstring "rxn"
+        >>. spaces
+        >>. betweenBrackets (commaSeparated3 pExpr pExpr pfloat)
+        |>> fun x -> Rxn(x)
 
     let pModuleS =
         spaces >>. choice [ pCmp; pSub; pAdd; pLd; pSqrt; pDiv; pMul ]
         |>> fun (arith) -> arith
-
-
-
 
     let pIfGT =
         spaces >>. pstring "ifGT" >>. spaces >>. betweenBrackets (pCommandSList)
