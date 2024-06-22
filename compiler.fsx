@@ -69,3 +69,20 @@ let compile stps =
         | stp::t -> compileStep stp ("_X" + n.ToString()) @ compileSteps t (n+3)
 
     compileSteps stps
+
+let program1 =
+    "
+    crn = {
+    conc[c,3 ], conc[ cInitial ,3 ],
+    conc[one ,1], conc[zero ,0],
+    step[
+    sub[c,one,cnext ],
+    cmp[c,zero]
+    ],
+    step[
+    ifGT[ ld [cnext ,c] ],
+    ifLE[ ld [ cInitial ,c] ]
+    ]
+     }  
+    
+    "

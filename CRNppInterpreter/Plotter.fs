@@ -6,7 +6,7 @@ module Plotter =
     open Plotly.NET
     open Plotly.NET.LayoutObjects
 
-    let plotter (simData: seq<State>) nSteps =
+    let genSimulationPlot (simData: seq<State>) nSteps =
 
         let rec helperFunc (species: Species) (data: State seq) =
             match Seq.toList data with
@@ -27,3 +27,6 @@ module Plotter =
         let keys = List.ofSeq (Seq.head nData).Keys
         let charts = helperFunc2 (keys) x nData
         charts |> Chart.combine
+
+    let simulationPlot (simData : seq<State>) nSteps =
+        (genSimulationPlot simData nSteps) |> Chart.show;

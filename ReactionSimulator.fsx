@@ -1,6 +1,8 @@
 #r "CRNppInterpreter\\Library\\net7.0\\CRNppInterpreter.dll"
 #r "nuget: FParsec, 1.1.1"
+#r "nuget: Plotly.NET, 4.0.0"
 open Interpreter.Parser
+open Interpreter.Plotter
 
 
 type State = Map<Species, Number>
@@ -51,11 +53,44 @@ let reactionSimulator (initialConcs : State) (reactions: RxnS list) timeRes =
             Some(newState, newState))
         (initialConcs))
 
-let exampleConcs : State = Map([("A",2.0);("B",2.0);("C",0.0)])
-let exampleReactions : RxnS list = [RxnS(["A"],["A";"C"],1);
+let exampleAddConcs : State = Map([("A",2.0);("B",2.0);("C",0.0)])
+let exampleAddReactions : RxnS list = [RxnS(["A"],["A";"C"],1);
     RxnS(["B"],["B";"C"],1);
     RxnS(["C"],[],1)]
 
 
-let example = List.ofSeq (Seq.take 100 (reactionSimulator exampleConcs exampleReactions 0.01))
-printfn "%A" example
+let exampleAdd = List.ofSeq (Seq.take 1000 (reactionSimulator exampleAddConcs exampleAddReactions 0.1))
+// printfn "%A" exampleAdd
+// printfn "%A" (List.last exampleAdd)
+
+let exampleSubConcs : State = Map([("A",5.0);("B",2.0);("C",0.0);("H",0.0)])
+let exampleSubReactions : RxnS list = [RxnS(["A"],["A";"C"],1);
+    RxnS(["B"],["B";"H"],1);
+    RxnS(["C"],[],1);
+    RxnS(["C";"H"],[],1)]
+
+let exampleSub = List.ofSeq (Seq.take 1000 (reactionSimulator exampleSubConcs exampleSubReactions 0.1))
+// printfn "%A" exampleSub
+// printfn "%A" (List.last exampleSub)
+// simulationPlot (reactionSimulator exampleSubConcs exampleSubReactions 0.1) 1000
+
+let exampleSqrtConcs : State = Map([("A",144.0);("B",0.0);])
+let exampleSqrtReactions : RxnS list = [RxnS(["A"],["A";"B"],1);
+    RxnS(["B";"B"],[],0.5)]
+
+let exampleSqrt = List.ofSeq (Seq.take 1000 (reactionSimulator exampleSqrtConcs exampleSqrtReactions 0.001))
+simulationPlot (exampleSqrt) 1000
+
+let exampleSqrtAddConcs : State  = Map([("A",100.0);("B",44.0);("C",0.0);
+    ("D",0.0);
+    ])
+let exampleSqrtAddReactions : RxnS list = [
+    RxnS(["A"],["A";"C"],1);
+    RxnS(["B"],["B";"C"],1);
+    RxnS(["C"],[],1);
+    
+    RxnS(["C"],["C";"D"],1);
+    RxnS(["D";"D"],[],0.5)
+    ]
+let exampleSqrtAdd = (reactionSimulator exampleSqrtAddConcs exampleSqrtAddReactions 0.01)
+simulationPlot (exampleSqrtAdd) 1000

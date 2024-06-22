@@ -9,7 +9,7 @@
       "CRNppInterpreter/1.0.0": {
         "dependencies": {
           "FParsec": "1.1.1",
-          "FSharp.Core": "7.0.200",
+          "FSharp.Core": "8.0.300",
           "Plotly.NET": "4.0.0"
         },
         "runtime": {
@@ -18,7 +18,7 @@
       },
       "DynamicObj/2.0.0": {
         "dependencies": {
-          "FSharp.Core": "7.0.200",
+          "FSharp.Core": "8.0.300",
           "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
@@ -30,7 +30,7 @@
       },
       "FParsec/1.1.1": {
         "dependencies": {
-          "FSharp.Core": "7.0.200"
+          "FSharp.Core": "8.0.300"
         },
         "runtime": {
           "lib/netstandard2.0/FParsec.dll": {
@@ -43,11 +43,11 @@
           }
         }
       },
-      "FSharp.Core/7.0.200": {
+      "FSharp.Core/8.0.300": {
         "runtime": {
           "lib/netstandard2.1/FSharp.Core.dll": {
-            "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.2.23.6902"
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.3.24.21101"
           }
         },
         "resources": {
@@ -94,7 +94,7 @@
       },
       "Giraffe.ViewEngine/1.4.0": {
         "dependencies": {
-          "FSharp.Core": "7.0.200"
+          "FSharp.Core": "8.0.300"
         },
         "runtime": {
           "lib/net5.0/Giraffe.ViewEngine.dll": {
@@ -114,7 +114,7 @@
       "Plotly.NET/4.0.0": {
         "dependencies": {
           "DynamicObj": "2.0.0",
-          "FSharp.Core": "7.0.200",
+          "FSharp.Core": "8.0.300",
           "Giraffe.ViewEngine": "1.4.0",
           "Newtonsoft.Json": "13.0.1"
         },
@@ -147,12 +147,12 @@
       "path": "fparsec/1.1.1",
       "hashPath": "fparsec.1.1.1.nupkg.sha512"
     },
-    "FSharp.Core/7.0.200": {
+    "FSharp.Core/8.0.300": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-NmgUnpNH6Zu9B0SPIhojyo38gnPdkdYFYQfbd6zosEH32kbGY/g/Klk7PfOWe1NAe/O1YOMmK9KhwQ2OWsWEbg==",
-      "path": "fsharp.core/7.0.200",
-      "hashPath": "fsharp.core.7.0.200.nupkg.sha512"
+      "sha512": "sha512-Jv44fV7TNglyMku89lQcA4Q6mFKLyHb2bs1Yb72nvSVc+cHplEnoZ4XQUaaTLJGUTx/iMqcrkYGtaLzkkIhpaA==",
+      "path": "fsharp.core/8.0.300",
+      "hashPath": "fsharp.core.8.0.300.nupkg.sha512"
     },
     "Giraffe.ViewEngine/1.4.0": {
       "type": "package",

@@ -1,7 +1,5 @@
 #r "CRNppInterpreter\\Library\\net7.0\\CRNppInterpreter.dll"
 #r "nuget: Plotly.NET, 4.0.0"
-//#r "nuget: FParsec, 1.1.1"
-//open FParsec
 open Interpreter.Parser
 open Plotly.NET
 open Plotly.NET.LayoutObjects
@@ -37,7 +35,7 @@ let example = seq{
     ]);
 }
 
-let plotter (simData : seq<State>) nSteps =
+let genSimulationPlot (simData : seq<State>) nSteps =
 
     let rec helperFunc (species : Species) (data : State seq) =
         match Seq.toList data with
@@ -55,4 +53,7 @@ let plotter (simData : seq<State>) nSteps =
     let charts = helperFunc2 (keys) x nData
     charts |> Chart.combine
 
-(plotter example 5) |> Chart.show;
+let simulationPlot (simData : seq<State>) nSteps =
+    (genSimulationPlot simData nSteps) |> Chart.show;
+
+simulationPlot example 5

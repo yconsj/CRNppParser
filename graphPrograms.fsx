@@ -32,4 +32,4 @@ let interpretedProgram1 = interpretProgram parsedProgram1
 
 
 printf "%A \n" interpretedProgram1
-(plotter interpretedProgram1 30) |> Chart.show
+simulationPlot interpretedProgram1 30
