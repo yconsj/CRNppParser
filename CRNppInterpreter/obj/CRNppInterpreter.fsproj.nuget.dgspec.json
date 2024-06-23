@@ -50,6 +50,11 @@
               "version": "[8.0.300, )",
               "generatePathProperty": true
             },
+            "MathNet.Numerics": {
+              "target": "Package",
+              "version": "[5.0.0, )",
+              "generatePathProperty": true
+            },
             "Plotly.NET": {
               "target": "Package",
               "version": "[4.0.0, )",

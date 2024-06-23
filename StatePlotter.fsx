@@ -35,25 +35,36 @@ let example = seq{
     ]);
 }
 
-let genSimulationPlot (simData : seq<State>) nSteps =
 
+let genSimulationPlot xData (simData : State seq) (smooth : bool) =
     let rec helperFunc (species : Species) (data : State seq) =
         match Seq.toList data with
         | [] -> seq []
         | h::tail -> 
         let sq1 = seq {(Map.find species h)}
         Seq.append sq1 (helperFunc species tail)
-    let rec helperFunc2 keys xdata ydata =
+    let rec helperFunc2 keys xdata ydata smooth =
         match keys with
-        | h::tail -> [Chart.Scatter(xdata, (helperFunc h ydata), mode=StyleParam.Mode.Lines, Name=h)] @ (helperFunc2 tail xdata ydata)    
+        | h::tail -> 
+            if (smooth) then
+                [Chart.Spline(xdata,(helperFunc h ydata),false, Smoothing=0.4, Name=h)] @ (helperFunc2 tail xdata ydata smooth)  
+            else 
+                [Chart.Scatter(xdata, (helperFunc h ydata), mode=StyleParam.Mode.Lines, Name=h)] @ (helperFunc2 tail xdata ydata smooth)    
         | [] -> []
-    let nData = Seq.take nSteps simData 
-    let x = [0 .. 1 .. nSteps]
-    let keys = List.ofSeq (Seq.head nData).Keys
-    let charts = helperFunc2 (keys) x nData
+    let keys = List.ofSeq (Seq.head simData).Keys
+    let charts = helperFunc2 (keys) xData simData smooth
     charts |> Chart.combine
 
+let genSimulationPlotNSteps (simData : seq<State>) nSteps =
+    let nData = Seq.take nSteps simData 
+    let x = [0 .. 1 .. nSteps]
+    genSimulationPlot x nData
+
+
 let simulationPlot (simData : seq<State>) nSteps =
-    (genSimulationPlot simData nSteps) |> Chart.show;
+    (genSimulationPlotNSteps simData nSteps false) |> Chart.show;
+
+let smoothSimPlot (xData) (simData : seq<State>) =
+    (genSimulationPlot xData simData true) |> Chart.show
 
 simulationPlot example 5

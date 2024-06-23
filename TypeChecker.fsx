@@ -69,6 +69,7 @@ let TypeChecker root =
     let rec stephelper (step : CommandS list ) env =
         match (step) with
         | [] -> None
+        | Rxn(h)::tail -> stephelper tail env
         | Module(h)::tail -> lazyOptionSome (moduleHelper h env) (stephelper tail env)
         | Conditional(h)::tail ->
             let r = conditionalhelper h env

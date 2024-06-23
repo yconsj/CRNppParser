@@ -15,6 +15,7 @@
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">C:\Users\augus\.nuget\packages\fsharp.core\8.0.300</PkgFSharp_Core>
     <PkgPlotly_NET Condition=" '$(PkgPlotly_NET)' == '' ">C:\Users\augus\.nuget\packages\plotly.net\4.0.0</PkgPlotly_NET>
+    <PkgMathNet_Numerics Condition=" '$(PkgMathNet_Numerics)' == '' ">C:\Users\augus\.nuget\packages\mathnet.numerics\5.0.0</PkgMathNet_Numerics>
     <PkgFParsec Condition=" '$(PkgFParsec)' == '' ">C:\Users\augus\.nuget\packages\fparsec\1.1.1</PkgFParsec>
   </PropertyGroup>
 </Project>
