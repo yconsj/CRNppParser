@@ -60,7 +60,7 @@ let reactionSimulator (initialConcs: State) (reactions: RxnS list) (timeStepSize
     let arrayToState (species: Species list) (concs: Vector<float>) =
         let stateList =
             List.zip species (List.ofArray (concs.AsArray()))
-            |> List.map (fun (sp, conc) -> sp, floatFloor conc 0)
+            |> List.map (fun (sp, conc) -> sp, conc)
 
         Map.ofList stateList
 
@@ -68,6 +68,7 @@ let reactionSimulator (initialConcs: State) (reactions: RxnS list) (timeStepSize
         (fun stateVector ->
             let newStateArray = solveStep stateVector reactions species timeStepSize
             let newStateVector = newStateArray.[newStateArray.Length - 1] // Take the last state in the array
+            let newStateVector = newStateVector.Map (fun x -> floatFloor x 0.001 )
             Some(arrayToState species newStateVector, newStateVector))
         initialConcsVector
 
