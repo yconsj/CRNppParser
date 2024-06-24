@@ -13,9 +13,12 @@
     <Compile Include="Plotter.fs" />
     <Compile Include="TreeSrc/Tree.fs" />
     <Compile Include="TreeSrc/TreePlotter.fs" />
+    <Compile Include="Compiler.fs" />
+    <Compile Include="ReactionSimulator.fs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="FParsec" Version="1.1.1" />
     <PackageReference Include="Plotly.NET" Version="4.0.0" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
