@@ -82,17 +82,14 @@ let reactionSimulatorPlot (initialConcs: State) (reactions: RxnS list) (timeStep
     smoothSimPlot xData yData
 
 
-// let fig1MulConcs : State  = Map([("A",6.0);("B",2.0);("C",0.0);
-//     ("D",0.0);
-//     ])
-// let fig1MulReaction : RxnS list = [
-//     RxnS(["A";"B"],["A";"B";"C"],1);
-//     RxnS(["C"],[],1);
-//     ]
+let fig1MulConcs: State = Map([ ("A", 6.0); ("B", 2.0); ("C", 0.0); ("D", 0.0) ])
+
+let fig1MulReaction: RxnS list =
+    [ RxnS([ "A"; "B" ], [ "A"; "B"; "C" ], 1); RxnS([ "C" ], [], 1) ]
 
 // let fig1States = (reactionSimulator fig1MulConcs fig1MulReaction 0.05)
 // simulationPlot (fig1States) 1000
-
+// reactionSimulatorPlot  fig1MulConcs fig1MulReaction 0.1 100
 
 let fig4OscConcs: State = Map([ ("X_1", 2); ("X_2", 0.01); ("X_3", 0.005) ])
 
@@ -118,6 +115,7 @@ let fig4OscReaction: RxnS list =
 ///  ]
 /// ]
 ///
+/// // 4 * 3 clock species
 /// // 4 * 3 clock species
 /// // 4 * 3 clock species
 /// // 4 * 3 clock species

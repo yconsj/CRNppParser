@@ -3,16 +3,25 @@
 #r "nuget: FParsec, 1.1.1"
 open Interpreter.Parser
 open FParsec
+open System
+
+type CMPflag = CMPflag of bool
+type STEPflag = STEPflag of bool
 
 /// TypeChecker:
-/// Check the explicit restrictions
-/// Check CMP is executed in a step prior to ConditionalS
+/// Check the explicit restrictions: ✔
+/// Check CMP is executed in a step prior to ConditionalS: ✔
+/// dont allow names starting with underscore (protected names): ✔
+/// dont allow Conc on the same species multiple times: ✔
+/// dont allow empty LHS on Rxn: ✔
+/// a ConcS cannot follow after StepS: ✔ 
+/// 
+/// Chosen NOT to enforce:
 /// (Not true:) only non-conflicting commands in Steps
 /// (Not true:) only initialized (conc) species allowed in (source-variable of?) modules
-/// a conc cannot follow after StepS(?)
-/// protected symbols (such as XgtY, XltY), or just not allow names starting with e.g. underscore
-/// dont allow Conc on the same species multiple times.
-/// dont allow empty LHS on Rxn
+///  protected symbols (such as XgtY, XltY)
+/// 
+
 
 let lazyOptionSome opt1 opt2 =
     if Option.isSome opt1 then 
@@ -20,23 +29,27 @@ let lazyOptionSome opt1 opt2 =
     else
         opt2
 
-type Env = Map<Species, Number> * bool // initialized variables, has run a CMP
+type Env = Map<Species, Number> * CMPflag * STEPflag // initialized variables, has executed a CMP, has executed a Step
 
 let TypeChecker root = 
+    let isValidName (sp : Species) =
+        if (Seq.head sp) = '_' then 
+            false
+        else true  
+
     let conchelper (conc : ConcS) (env : Env) =
         match conc, env with
-        | (sp, nu), (map, b) -> 
-            if (Map.containsKey sp map) then
-                Some(sprintf "Preexisting species \'%s\' in env" sp), env
-            else
-                None, ((Map.add sp nu map), b)
-    let IsNotInitializedVariable vars env =
-        match env with (map, _) ->
-        let uninitialized = Seq.tryFind (fun x -> not (Map.containsKey x map)) vars
-        if (Option.isSome uninitialized) then
-            Some(sprintf "Reference to uninitialized Species: \'%s\'" (Option.get uninitialized))
-        else
-            None
+        | _, (_, _, STEPflag(sflag)) 
+            when sflag ->
+            Some(sprintf "Cannot define concentrations after StepS"), env
+        | (sp, _), (map, _, _) 
+            when Map.containsKey sp map -> // verify species hasn't been initialized yet. 
+            Some(sprintf "Preexisting species \'%s\' in env" sp), env
+        | (sp, _), _
+            when not (isValidName sp) ->
+            Some(sprintf "Name is not valid for \'%s\'. Name must not begin with '_'" sp), env
+        | (sp, nu), (map, cflag, sflag) -> 
+            None, ((Map.add sp nu map), cflag, sflag)
 
     let IsSameSpecies sA sB =
         if (sA = sB) then
@@ -44,56 +57,69 @@ let TypeChecker root =
         else
             None
             
-    let triModHelper (a : Species) (b : Species) (c : Species) env =
-        let vars = seq {a;b;c}
-        let uninitialized = (IsNotInitializedVariable vars env)
-        let AeqC = IsSameSpecies a c
-        lazyOptionSome (lazyOptionSome uninitialized AeqC) (IsSameSpecies b c)
+    let triModHelper (a : Species) (b : Species) (c : Species) (env : Env) =
+        (lazyOptionSome (IsSameSpecies a c) (IsSameSpecies b c)), env
     
-    let binModHelper (a : Species) (b : Species) env =
-        let vars = seq {a;b}
-        let uninitialized = (IsNotInitializedVariable vars env)
-        let Aeqb = IsSameSpecies a b
-        lazyOptionSome uninitialized Aeqb
+    let binModHelper (a : Species) (b : Species) (env : Env) =
+        IsSameSpecies a b, env
 
-    let moduleHelper md env =
-        match md with
-        | ADD(a,b,c)
-        | SUB(a,b,c)
-        | MUL(a,b,c)
-        | DIV(a,b,c) -> triModHelper a b c env //...
-        | LD(a,b)
-        | SQRT(a,b)
-        | CMP(a,b) -> binModHelper a b env
+    let moduleHelper md (env : Env) =
+        match md, env with
+        | ADD(a,b,c), _
+        | SUB(a,b,c), _
+        | MUL(a,b,c), _
+        | DIV(a,b,c), _ -> triModHelper a b c env //...
+        | LD(a,b), _
+        | SQRT(a,b), _ -> binModHelper a b env
+        | CMP(a,b), (map, _, sflag) -> 
+            binModHelper a b (map, CMPflag(true), sflag)
 
-    let rec stephelper (step : CommandS list ) env =
+    let rxnhelper (rxn : RxnS) =
+        match rxn with
+        | (lhs, rhs, rate) when List.isEmpty lhs->
+            Some(sprintf "Rxn has empty left-hand side: \'%A -> %A : %f\'" lhs rhs rate)
+        | _ -> None
+
+    let rec stephelper (step : CommandS list ) (env : Env) =
         match (step) with
-        | [] -> None
-        | Rxn(h)::tail -> stephelper tail env
-        | Module(h)::tail -> lazyOptionSome (moduleHelper h env) (stephelper tail env)
+        | [] -> None, env
+        | Rxn(h)::tail -> 
+            let rxnOpt = (rxnhelper h)
+            let stepOpt, newEnv = (stephelper tail env)
+            (lazyOptionSome (rxnOpt) (stepOpt)), newEnv
+        | Module(h)::tail -> 
+            let modOpt, newEnv = (moduleHelper h env)
+            let stepOpt, newEnv = (stephelper tail newEnv)
+            lazyOptionSome (modOpt) (stepOpt), newEnv
         | Conditional(h)::tail ->
-            let r = conditionalhelper h env
-            lazyOptionSome r (stephelper tail env)
+            let condOpt, newEnv = conditionalhelper h env
+            let stepOpt, newEnv = (stephelper tail newEnv)
+            lazyOptionSome (condOpt)(stepOpt), newEnv
     and conditionalhelper cond env =
-        match cond with
-        | IfGT(cmds) 
-        | IfGE(cmds)
-        | IfEQ(cmds)
-        | IfLT(cmds)
-        | IfLE(cmds) -> stephelper cmds env
+        match cond, env with
+        | IfGT(cmds), (_, CMPflag(cflag), _)
+        | IfGE(cmds), (_, CMPflag(cflag), _)
+        | IfEQ(cmds), (_, CMPflag(cflag), _)
+        | IfLT(cmds), (_, CMPflag(cflag), _)
+        | IfLE(cmds), (_, CMPflag(cflag), _) -> 
+            if not cflag then 
+                Some(sprintf "cannot run conditional-module before CMP-module"), env
+            else
+                let stepOpt, newEnv = stephelper cmds env
+                stepOpt, newEnv
 
     let rec rootListHelper rootList env =
-        match rootList with
-        | []-> None
-        | Conc(h)::tail -> 
-            let (r,m) = conchelper h env
-            lazyOptionSome r (rootListHelper tail env)
-        | Step(h)::tail ->
-            let r = stephelper h env
-            lazyOptionSome r (rootListHelper tail env)
+        match rootList, env with
+        | [], _-> None
+        | Conc(h)::tail, _ -> 
+            let (r, e) = conchelper h env
+            lazyOptionSome r (rootListHelper tail e)
+        | Step(h)::tail, (map, cflag, sflag)  ->
+            let stepOpt, newEnv = stephelper h (map, cflag, STEPflag(true))
+            lazyOptionSome stepOpt (rootListHelper tail newEnv)
 
     match root with
-    | CRN(rlist) -> rootListHelper rlist ((Map.empty, false) : Env)
+    | CRN(rlist) -> rootListHelper rlist ((Map.empty, CMPflag(false), STEPflag(false)) : Env)
 
 
 let extract p str =
@@ -112,5 +138,56 @@ printfn "%A" (TypeChecker program4)
 let program5 = extract pCrn "crn = {conc[A,2], conc[B,2],  conc[C,0], step[add[A,B,C]]}"
 printfn "%A" (TypeChecker program5)
 
+let program6 = extract pCrn "
+    crn = {
+    conc[e, 1], conc[element, 1],
+    conc[ divisor , 1], conc[one, 1],
+    conc[ divisorMultiplier , 1],
+    step[
+    div [element, divisor , elementNext],
+    add[ divisor , one, divisorNext ],
+    add[e, elementNext, eNext]
+    ],
+    step[
+    ld [elementNext, element ],
+    ld [ divisorNext , divisor ],
+    ld [eNext, e]
+     ]
+    }
+    
+"
+printfn "%A" (TypeChecker program6)
 
+let program7 = extract pCrn "
+        crn = {
+        conc[c,3 ], conc[ cInitial ,3 ],
+        conc[one ,1], conc[zero ,0],
+        step[
+        sub[c,one,cnext ],
+        cmp[c,zero]
+        ],
+        step[
+        ifGT[ ld [cnext ,c] ],
+        ifLE[ ld [ cInitial ,c] ]
+        ]
+        }
+"
+printfn "%A" (TypeChecker program7)
 
+let program8 = extract pCrn  "
+crn={
+    conc[ f ,1], conc[one ,1], conc[ i , 5 ],
+    step[
+    cmp[i,one ],
+    mul[f , i , fnext ],
+    sub[ i ,one, inext ]
+    ],
+    step[
+    ifGT[
+    ld [ inext , i ],
+    ld [ fnext , f ]
+    ]
+    ]
+    }
+"
+printfn "%A" (TypeChecker program8)
