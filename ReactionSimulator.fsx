@@ -39,7 +39,7 @@ let odes (reactions: RxnS list) (species: Species list) (t: float) (concs: Vecto
 let solveStep (initialConcs: Vector<float>) (reactions: RxnS list) (species: Species list) (timeStepSize: float) =
     let odeFunc (t: float) (concs: Vector<float>) =
         odes reactions species t concs
-    let resolution = 5
+    let resolution = 3
     RungeKutta.SecondOrder(initialConcs, 0.0, timeStepSize, resolution, odeFunc)
     
 // Infinite sequence of states using ODE solver
@@ -67,24 +67,40 @@ let reactionSimulatorPlot (initialConcs: State) (reactions: RxnS list) (timeStep
     smoothSimPlot xData yData
 
 
-// let fig1MulConcs : State  = Map([("A",6.0);("B",2.0);("C",0.0);
-//     ("D",0.0);
-//     ])
-// let fig1MulReaction : RxnS list = [
-//     RxnS(["A";"B"],["A";"B";"C"],1);
-//     RxnS(["C"],[],1);
-//     ]
+let fig1MulConcs : State  = Map([("A",6.0);("B",2.0);("C",0.0);
+    ("D",0.0);
+    ])
+let fig1MulReaction : RxnS list = [
+    RxnS(["A";"B"],["A";"B";"C"],1);
+    RxnS(["C"],[],1);
+    ]
 
 // let fig1States = (reactionSimulator fig1MulConcs fig1MulReaction 0.05)
 // simulationPlot (fig1States) 1000
+// reactionSimulatorPlot  fig1MulConcs fig1MulReaction 0.1 100
 
-
-let fig4OscConcs : State  = Map([("X_1",2);("X_2",0.01);("X_3",0.005);
+let fig4OscConcs : State  = Map([("X_1",0.495);
+    ("X_2",0.000001);  
+    ("X_3",0.000001);
+    ("X_4",0.000001);
+    ("X_5",0.000001);
+    ("X_6",0.000001);
+    ("X_7",0.000001);
+    ("X_8",0.000001);
+    ("X_9",0.000001);
+    ("X_10",0.495);
     ])
 let fig4OscReaction : RxnS list = [
     RxnS(["X_1";"X_2"],["X_2";"X_2"],1.0);
     RxnS(["X_2";"X_3"],["X_3";"X_3"],1.0);
-    RxnS(["X_3";"X_1"],["X_1";"X_1"],1.0);
+    RxnS(["X_3";"X_4"],["X_4";"X_4"],1.0);
+    RxnS(["X_4";"X_5"],["X_5";"X_5"],1.0);
+    RxnS(["X_5";"X_6"],["X_6";"X_6"],1.0);
+    RxnS(["X_6";"X_7"],["X_7";"X_7"],1.0);
+    RxnS(["X_7";"X_8"],["X_8";"X_8"],1.0);
+    RxnS(["X_8";"X_9"],["X_9";"X_9"],1.0);
+    RxnS(["X_9";"X_10"],["X_10";"X_10"],1.0);
+    RxnS(["X_10";"X_1"],["X_1";"X_1"],1.0);
     ]
 
 //let fig4States = (reactionSimulator fig4OscConcs fig4OscReaction 1)
