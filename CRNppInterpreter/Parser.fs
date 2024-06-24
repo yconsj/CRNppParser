@@ -20,7 +20,6 @@ module Parser =
     type CommandS =
         | Module of ModuleS
         | Conditional of ConditionalS
-        | Rxn of RxnS
 
     and ConditionalS =
         | IfGT of CommandSList
@@ -146,8 +145,7 @@ module Parser =
         spaces
         >>. choice
             [ pConditionalS .>> spaces |>> fun cond -> Conditional(cond)
-              pModuleS .>> spaces |>> fun (mod) -> Module (mod)
-              pRxnS .>> spaces |>> fun x -> Rxn(x) ]
+              pModuleS .>> spaces |>> fun (mod) -> Module (mod) ]
 
     let pCommandSListImpl =
         sepBy1 pCommandS (spaces >>. skipString "," >>. spaces) |>> fun l -> l

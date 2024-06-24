@@ -5,17 +5,17 @@
     <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
     <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
     <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
-    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\augus\.nuget\packages\</NuGetPackageFolders>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\simon\.nuget\packages\</NuGetPackageFolders>
     <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
-    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.10.0</NuGetToolVersion>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.5.0</NuGetToolVersion>
   </PropertyGroup>
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <SourceRoot Include="C:\Users\augus\.nuget\packages\" />
+    <SourceRoot Include="C:\Users\simon\.nuget\packages\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">C:\Users\augus\.nuget\packages\fsharp.core\8.0.300</PkgFSharp_Core>
-    <PkgPlotly_NET Condition=" '$(PkgPlotly_NET)' == '' ">C:\Users\augus\.nuget\packages\plotly.net\4.0.0</PkgPlotly_NET>
-    <PkgMathNet_Numerics Condition=" '$(PkgMathNet_Numerics)' == '' ">C:\Users\augus\.nuget\packages\mathnet.numerics\5.0.0</PkgMathNet_Numerics>
-    <PkgFParsec Condition=" '$(PkgFParsec)' == '' ">C:\Users\augus\.nuget\packages\fparsec\1.1.1</PkgFParsec>
+    <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">C:\Users\simon\.nuget\packages\fsharp.core\7.0.200</PkgFSharp_Core>
+    <PkgPlotly_NET Condition=" '$(PkgPlotly_NET)' == '' ">C:\Users\simon\.nuget\packages\plotly.net\4.0.0</PkgPlotly_NET>
+    <PkgMathNet_Numerics Condition=" '$(PkgMathNet_Numerics)' == '' ">C:\Users\simon\.nuget\packages\mathnet.numerics\5.0.0</PkgMathNet_Numerics>
+    <PkgFParsec Condition=" '$(PkgFParsec)' == '' ">C:\Users\simon\.nuget\packages\fparsec\1.1.1</PkgFParsec>
   </PropertyGroup>
 </Project>
