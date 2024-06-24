@@ -16,7 +16,6 @@ open Sim
 // Table 1).
 
 let table1 m n catalystL =
-    printfn "%A \n" catalystL
     let clockSpecies = "_X" + n.ToString()
 
 
@@ -52,14 +51,26 @@ let table1 m n catalystL =
         let YltX = "_YltX"
         let Bx = "_Bx"
         let By = "_By"
-        let nextClockSpecies = "_X" + (n + 3).ToString()
-        //TODO ADD CLOCK SPECIES
+        let nextClockSpecies = "_X" + (n + 1).ToString()
 
-        [ RxnS(catalystL @ [ clockSpecies; XgtY; Y ], catalystL @ [ clockSpecies; XltY; Y ], 1) ]
-        @ [ RxnS(catalystL @ [ clockSpecies; XltY; X ], catalystL @ [ clockSpecies; XgtY; X ], 1) ]
+
+
+        // add epsilon X
+        [ RxnS(catalystL @ [ clockSpecies; X ], catalystL @ [ clockSpecies; X; "_epsX" ], 1) ]
+        @ [ RxnS(catalystL @ [ clockSpecies; "_epsilon" ], catalystL @ [ clockSpecies; "_epsilon"; "_epsX" ], 1) ]
+        @ [ RxnS(catalystL @ [ clockSpecies; "_epsX" ], catalystL @ [ clockSpecies ], 1) ]
+
+
+        // add epsilon Y
+        @ [ RxnS(catalystL @ [ clockSpecies; Y ], catalystL @ [ clockSpecies; Y; "_epsY" ], 1) ]
+        @ [ RxnS(catalystL @ [ clockSpecies; "_epsilon" ], catalystL @ [ clockSpecies; "_epsilon"; "_epsY" ], 1) ]
+        @ [ RxnS(catalystL @ [ clockSpecies; "_epsY" ], catalystL @ [ clockSpecies ], 1) ]
+        // cmp
+        @ [ RxnS(catalystL @ [ clockSpecies; XgtY; Y ], catalystL @ [ clockSpecies; XltY; Y ], 1) ]
+        @ [ RxnS(catalystL @ [ clockSpecies; XltY; "_epsX" ], catalystL @ [ clockSpecies; XgtY; "_epsX" ], 1) ]
 
         @ [ RxnS(catalystL @ [ clockSpecies; YgtX; X ], catalystL @ [ clockSpecies; YltX; X ], 1) ]
-        @ [ RxnS(catalystL @ [ clockSpecies; YltX; Y ], catalystL @ [ clockSpecies; YgtX; Y ], 1) ]
+        @ [ RxnS(catalystL @ [ clockSpecies; YltX; "_epsY" ], catalystL @ [ clockSpecies; YgtX; "_epsY" ], 1) ]
 
         // CRN8
         // move to next step
@@ -83,7 +94,9 @@ let rec compileStep stp clockSpecies catalysts =
     | Conditional(IfGT(x)) :: t ->
         (compileStep x clockSpecies ("_YltX" :: "_XgtY" :: catalysts))
         @ compileStep t clockSpecies catalysts
-    | Conditional(IfGE(x)) :: t -> (compileStep x clockSpecies ("?" :: catalysts)) @ compileStep t clockSpecies []
+    | Conditional(IfGE(x)) :: t ->
+        (compileStep x clockSpecies ("_XgtY" :: catalysts))
+        @ compileStep t clockSpecies catalysts
     | Conditional(IfEQ(x)) :: t ->
         (compileStep x clockSpecies ("_YgtX" :: "_XgtY" :: catalysts))
         @ compileStep t clockSpecies catalysts
@@ -91,7 +104,7 @@ let rec compileStep stp clockSpecies catalysts =
         (compileStep x clockSpecies ("_YgtX" :: "_XltY" :: catalysts))
         @ compileStep t clockSpecies catalysts
     | Conditional(IfLE(x)) :: t ->
-        (compileStep x clockSpecies ("_XltY" :: "_YgtX" :: "_XgtY" :: catalysts))
+        (compileStep x clockSpecies ("_YgtX" :: catalysts))
         @ compileStep t clockSpecies catalysts
     | _ -> []
 
@@ -151,10 +164,18 @@ let compile stps =
 
     let initialConcs = compileInitialConcs stps initialConcs
     // add clocks
-    let rec clockConcs n acc =
+    let rec clockConcs n v acc =
+
         match n with
-        | 1 -> Map.add ("_X1") 2.0 acc
-        | n -> clockConcs (n - 1) (Map.add ("_X" + n.ToString()) 0.01 acc)
+        | 1 -> acc
+        | n -> clockConcs (n - 1) v (Map.add ("_X" + n.ToString()) v acc)
+
+    let v = 0.00000001
+    let startC = (1.0 - (v * (float (nSteps - 2)))) / 2.0
+    let initialConcs = (clockConcs (3 * nSteps) v initialConcs)
+
+    let initialConcs =
+        Map.add ("_X" + nSteps.ToString()) startC (Map.add "_X1" startC initialConcs)
 
     let XgtY = "_XgtY"
     let XltY = "_XltY"
@@ -162,11 +183,11 @@ let compile stps =
     let YltX = "_YltX"
 
     let initialConcs =
-        Map.add
-            XgtY
-            0.5
-            (Map.add XltY 0.5 (Map.add YgtX 0.5 (Map.add YltX 0.5 ((clockConcs (3 * nSteps) initialConcs)))))
+        Map.add XgtY 0.5 (Map.add XltY 0.5 (Map.add YgtX 0.5 (Map.add YltX 0.5 (initialConcs))))
 
+    let epsilon = "_epsilon"
+    let initialConcs = Map.add epsilon 0.5 initialConcs
+    let initialConcs = Map.add "_epsY" 0.0 (Map.add "_epsX" 0.0 initialConcs)
     printf "%A" initialConcs
     printf "%A" reactions
     (reactions, initialConcs)
@@ -226,9 +247,9 @@ crn={
     }
 "
 
-let parsedProgram = parseCrn program3
+let parsedProgram = parseCrn program2
 
 let (CRN x) = parsedProgram
 let (reactions, initial) = compile x
 
-reactionSimulatorPlot initial reactions 0.5 200
+reactionSimulatorPlot initial reactions 0.5 1200
