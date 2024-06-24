@@ -1,12 +1,15 @@
 #r "CRNppInterpreter/Library/net7.0/CRNppInterpreter.dll"
 #r "nuget: FParsec, 1.1.1"
 #r "nuget: Plotly.NET, 4.0.0"
+#r "nuget: FsCheck, 3.0.0-rc3"
 
 open Plotly.NET
 open Plotly.NET.LayoutObjects
-
+open FsCheck
+open FsCheck.FSharp
 open Interpreter.Parser
 open Interpreter.Plotter
+open Interpreter.Interpreter
 
 #load "ReactionSimulator.fsx"
 open Sim
@@ -188,8 +191,6 @@ let compile stps =
     let epsilon = "_epsilon"
     let initialConcs = Map.add epsilon 0.5 initialConcs
     let initialConcs = Map.add "_epsY" 0.0 (Map.add "_epsX" 0.0 initialConcs)
-    printf "%A" initialConcs
-    printf "%A" reactions
     (reactions, initialConcs)
 
 let program1 =
@@ -232,24 +233,16 @@ let program3 =
     "
 
 crn={
-    conc[ f ,1], conc[one ,1], conc[ i , 5 ],
+    conc[ f ,1], conc[one ,20], conc[ i , 14 ],
     step[
-    cmp[i,one ],
-    mul[f , i , fnext ],
-    sub[ i ,one, inext ]
-    ],
-    step[
-    ifGT[
-    ld [ inext , i ],
-    ld [ fnext , f ]
-    ]
+        sub[ i ,one, f ]
     ]
     }
 "
 
-let parsedProgram = parseCrn program2
+let parsedProgram = parseCrn program3
 
 let (CRN x) = parsedProgram
 let (reactions, initial) = compile x
 
-reactionSimulatorPlot initial reactions 0.5 1200
+reactionSimulatorPlot initial reactions 0.1 400
