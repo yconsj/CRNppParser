@@ -42,13 +42,16 @@ let solveStep (initialConcs: Vector<float>) (reactions: RxnS list) (species: Spe
     let resolution = 3
     RungeKutta.SecondOrder(initialConcs, 0.0, timeStepSize, resolution, odeFunc)
     
+let floatFloor input floor =
+    if input < floor then floor else input
+
 // Infinite sequence of states using ODE solver
 let reactionSimulator (initialConcs: State) (reactions: RxnS list) (timeStepSize: float) =
     let species = List.ofSeq initialConcs.Keys
     let initialConcsVector = Vector<float>.Build.Dense([| for sp in species -> initialConcs.[sp] |])
     let arrayToState (species: Species list) (concs: Vector<float>) =
         let stateList = List.zip species (List.ofArray (concs.AsArray()))
-                        |> List.map (fun (sp, conc) -> sp, conc)
+                        |> List.map (fun (sp, conc) -> sp, floatFloor conc 0)
         Map.ofList stateList
 
     Seq.unfold (fun stateVector ->
@@ -105,9 +108,49 @@ let fig4OscReaction : RxnS list = [
 
 //let fig4States = (reactionSimulator fig4OscConcs fig4OscReaction 1)
 //simulationPlot (fig4States) 100
+// reactionSimulatorPlot  fig4OscConcs fig4OscReaction 0.5 100
+
+let divConcs : State = Map([
+    ("A",10);("B",10);("C",0);
+
+])
+let divReactions : RxnS list = [
+    RxnS(["A"],["A";"C"],1);
+    RxnS(["B";"C"],["B"],1);
+    
+]
+reactionSimulatorPlot  divConcs divReactions 0.1 100
 
 
-reactionSimulatorPlot  fig4OscConcs fig4OscReaction 0.5 100
+let exampleSubConcs : State = Map([("A",5.0);("B",5.0);("C",0.0);("H",0.0)])
+let exampleSubReactions : RxnS list = [RxnS(["A"],["A";"C"],1);
+    RxnS(["B"],["B";"H"],1);
+    RxnS(["C"],[],1);
+    RxnS(["C";"H"],[],1)]
+reactionSimulatorPlot  exampleSubConcs exampleSubReactions 0.1 100
+
+
+let exampleSqrtConcs : State = Map([("A",144.0);("B",0.0);])
+let exampleSqrtReactions : RxnS list = [RxnS(["A"],["A";"B"],1);
+    RxnS(["B";"B"],[],0.5)]
+
+reactionSimulatorPlot  exampleSqrtConcs exampleSqrtReactions 0.1 100
+
+
+
+let exampleSqrtAddConcs : State  = Map([("A",100.0);("B",44.0);("C",0.0);
+    ("D",0.0);
+    ])
+let exampleSqrtAddReactions : RxnS list = [
+    RxnS(["A"],["A";"C"],1);
+    RxnS(["B"],["B";"C"],1);
+    RxnS(["C"],[],1);
+    
+    RxnS(["C"],["C";"D"],1);
+    RxnS(["D";"D"],[],0.5)
+    ]
+
+reactionSimulatorPlot  exampleSqrtAddConcs exampleSqrtAddReactions 0.1 100
 
 /// step[]
 /// step[... cmp ...]
