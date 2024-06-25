@@ -15,8 +15,6 @@ type State = Map<Species, Number>
 
 open System
 
-
-// old simulator
 let odes (reactions: RxnS list) (species: Species list) (t: float) (concs: Vector<float>) =
     let concDict =
         Map.ofList [ for i in 0 .. species.Length - 1 -> species.[i], concs.[i] ]

@@ -10,7 +10,7 @@ open System.Reflection
 [<assembly: System.Reflection.AssemblyCompanyAttribute("CRNppInterpreter")>]
 [<assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")>]
 [<assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")>]
-[<assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+65410ca7731454a3e6e645178c65dfc5afb80e11")>]
+[<assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e4c225aa9643107bf3cb08abca4bc96b44572614")>]
 [<assembly: System.Reflection.AssemblyProductAttribute("CRNppInterpreter")>]
 [<assembly: System.Reflection.AssemblyTitleAttribute("CRNppInterpreter")>]
 [<assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")>]

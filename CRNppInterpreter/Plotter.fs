@@ -30,9 +30,13 @@ module Plotter =
         let x = [0 .. 1 .. nSteps]
         genSimulationPlot x nData
 
-
+    let simulationPlotWithTitle (simData : seq<State>) nSteps title =        
+        let title = Title.init(title)
+        Chart.withTitle title (genSimulationPlotNSteps simData nSteps false)
+            |> Chart.show;
+            
     let simulationPlot (simData : seq<State>) nSteps =
-        (genSimulationPlotNSteps simData nSteps false) |> Chart.show;
+        simulationPlotWithTitle simData nSteps ""
 
     let smoothSimPlot (xData) (simData : seq<State>) =
         (genSimulationPlot xData simData true) |> Chart.show

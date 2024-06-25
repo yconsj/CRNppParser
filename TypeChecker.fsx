@@ -6,14 +6,16 @@ open FParsec
 open System
 
 type CMPflag = CMPflag of bool
+type CMPinStepflag = CMPinStepflag of bool
 type STEPflag = STEPflag of bool
 
 /// TypeChecker:
 /// Check the explicit restrictions: ✔
 /// Check CMP is executed in a step prior to ConditionalS: ✔
+/// Dont allow CMP in last step: ✔
 /// dont allow names starting with underscore (protected names): ✔
-/// dont allow Conc on the same species multiple times: ✔
 /// dont allow empty LHS on Rxn: ✔
+/// dont allow Conc on the same species multiple times: ✔
 /// a ConcS cannot follow after StepS: ✔ 
 /// 
 /// Chosen NOT to enforce:
@@ -29,7 +31,7 @@ let lazyOptionSome opt1 opt2 =
     else
         opt2
 
-type Env = Map<Species, Number> * CMPflag * STEPflag // initialized variables, has executed a CMP, has executed a Step
+type Env = Map<Species, Number> * CMPflag * STEPflag * CMPinStepflag // initialized variables, has executed a CMP, has executed a Step
 
 let TypeChecker root = 
     let isValidName (sp : Species) =
@@ -39,17 +41,17 @@ let TypeChecker root =
 
     let conchelper (conc : ConcS) (env : Env) =
         match conc, env with
-        | _, (_, _, STEPflag(sflag)) 
+        | _, (_, _, STEPflag(sflag),_) 
             when sflag ->
             Some(sprintf "Cannot define concentrations after StepS"), env
-        | (sp, _), (map, _, _) 
+        | (sp, _), (map, _, _, _) 
             when Map.containsKey sp map -> // verify species hasn't been initialized yet. 
             Some(sprintf "Preexisting species \'%s\' in env" sp), env
         | (sp, _), _
             when not (isValidName sp) ->
             Some(sprintf "Name is not valid for \'%s\'. Name must not begin with '_'" sp), env
-        | (sp, nu), (map, cflag, sflag) -> 
-            None, ((Map.add sp nu map), cflag, sflag)
+        | (sp, nu), (map, cflag, sflag, cthisflag) -> 
+            None, ((Map.add sp nu map), cflag, sflag, cthisflag)
 
     let IsSameSpecies sA sB =
         if (sA = sB) then
@@ -71,8 +73,8 @@ let TypeChecker root =
         | DIV(a,b,c), _ -> triModHelper a b c env //...
         | LD(a,b), _
         | SQRT(a,b), _ -> binModHelper a b env
-        | CMP(a,b), (map, _, sflag) -> 
-            binModHelper a b (map, CMPflag(true), sflag)
+        | CMP(a,b), (map, _, sflag, cthisflag) -> 
+            binModHelper a b (map, CMPflag(true), sflag, CMPinStepflag(true))
 
     let rxnhelper (rxn : RxnS) =
         match rxn with
@@ -97,29 +99,32 @@ let TypeChecker root =
             lazyOptionSome (condOpt)(stepOpt), newEnv
     and conditionalhelper cond env =
         match cond, env with
-        | IfGT(cmds), (_, CMPflag(cflag), _)
-        | IfGE(cmds), (_, CMPflag(cflag), _)
-        | IfEQ(cmds), (_, CMPflag(cflag), _)
-        | IfLT(cmds), (_, CMPflag(cflag), _)
-        | IfLE(cmds), (_, CMPflag(cflag), _) -> 
+        | IfGT(cmds), (_, CMPflag(cflag), _, _)
+        | IfGE(cmds), (_, CMPflag(cflag), _, _)
+        | IfEQ(cmds), (_, CMPflag(cflag), _, _)
+        | IfLT(cmds), (_, CMPflag(cflag), _, _)
+        | IfLE(cmds), (_, CMPflag(cflag), _, _) -> 
             if not cflag then 
                 Some(sprintf "cannot run conditional-module before CMP-module"), env
             else
                 let stepOpt, newEnv = stephelper cmds env
                 stepOpt, newEnv
 
-    let rec rootListHelper rootList env =
+    let rec rootListHelper rootList (env : Env) =
         match rootList, env with
-        | [], _-> None
+        | [], (_, _, _, CMPinStepflag(cmpstepflag)) when cmpstepflag -> 
+            Some("cannot run CMP in last step.")
+        | [], _ -> None
         | Conc(h)::tail, _ -> 
-            let (r, e) = conchelper h env
-            lazyOptionSome r (rootListHelper tail e)
-        | Step(h)::tail, (map, cflag, sflag)  ->
-            let stepOpt, newEnv = stephelper h (map, cflag, STEPflag(true))
+            let (r, newEnv) = conchelper h env
+            lazyOptionSome r (rootListHelper tail newEnv)
+        | Step(h)::tail, ((map, cflag, sflag, cmpstepflag)) 
+            ->
+            let stepOpt, newEnv = stephelper h (((map, cflag, sflag, CMPinStepflag(false))))
             lazyOptionSome stepOpt (rootListHelper tail newEnv)
 
     match root with
-    | CRN(rlist) -> rootListHelper rlist ((Map.empty, CMPflag(false), STEPflag(false)) : Env)
+    | CRN(rlist) -> rootListHelper rlist ((Map.empty, CMPflag(false), STEPflag(false), CMPinStepflag(false)) : Env)
 
 
 let extract p str =
@@ -128,15 +133,20 @@ let extract p str =
     | Failure(errorMsg, _, _) -> CRN([])
 
 let program1 = extract pCrn "crn = { conc[A,2],  conc[A,2], step[add[A,B,C]]} "
-printfn "%A" (TypeChecker program1)
+if false then 
+    printfn "%A" (TypeChecker program1)
 let program2 = extract pCrn "crn = {conc[A,2], conc[B,2], step[add[A,B,C]]}"
-printfn "%A" (TypeChecker program2)
+if false then 
+    printfn "%A" (TypeChecker program2)
 let program3 = extract pCrn "crn = {conc[A,2], conc[B,2], step[add[A,B,A]]}"
-printfn "%A" (TypeChecker program3)
+if false then 
+    printfn "%A" (TypeChecker program3)
 let program4 = extract pCrn "crn = {conc[A,2], conc[B,2], step[add[A,B,C]]}"
-printfn "%A" (TypeChecker program4)
+if false then 
+    printfn "%A" (TypeChecker program4)
 let program5 = extract pCrn "crn = {conc[A,2], conc[B,2],  conc[C,0], step[add[A,B,C]]}"
-printfn "%A" (TypeChecker program5)
+if false then 
+    printfn "%A" (TypeChecker program5)
 
 let program6 = extract pCrn "
     crn = {
@@ -156,7 +166,8 @@ let program6 = extract pCrn "
     }
     
 "
-printfn "%A" (TypeChecker program6)
+if false then 
+    printfn "%A" (TypeChecker program6)
 
 let program7 = extract pCrn "
         crn = {
@@ -172,7 +183,9 @@ let program7 = extract pCrn "
         ]
         }
 "
-printfn "%A" (TypeChecker program7)
+
+if false then 
+    printfn "%A" (TypeChecker program7)
 
 let program8 = extract pCrn  "
 crn={
@@ -183,11 +196,30 @@ crn={
     sub[ i ,one, inext ]
     ],
     step[
-    ifGT[
-    ld [ inext , i ],
-    ld [ fnext , f ]
-    ]
+        ifGT[
+            ld [ inext , i ],
+            ld [ fnext , f ]
+        ]
     ]
     }
 "
-printfn "%A" (TypeChecker program8)
+
+if false then 
+    printfn "%A" (TypeChecker program8)
+
+let program9 = extract pCrn" crn={
+        conc[ f ,1], conc[one ,1], conc[ i , 5 ],
+        step[
+            cmp[i,one ]
+        ],
+        step[
+            ifGT[
+            cmp[i,one]
+            ]
+        ],
+        step[
+            cmp[i,one ]
+        ]
+    }
+    "
+printfn "%A" (TypeChecker (program9))
