@@ -2,6 +2,7 @@
 #r "nuget: FParsec, 1.1.1"
 #r "nuget: Plotly.NET, 4.0.0"
 #r "nuget: FsCheck, 3.0.0-rc3"
+#r "nuget: MathNet.Numerics, 5.0.0"
 
 open Plotly.NET
 open Plotly.NET.LayoutObjects
@@ -10,9 +11,8 @@ open FsCheck.FSharp
 open Interpreter.Parser
 open Interpreter.Plotter
 open Interpreter.Interpreter
+open Interpreter.Simulator
 
-#load "ReactionSimulator.fsx"
-open Sim
 
 
 // 14. Compile stp : Step, that is, a list of commands, to chemical reaction networks. (See
@@ -235,7 +235,7 @@ let program3 =
 crn={
     conc[ f ,1], conc[one ,20], conc[ i , 14 ],
     step[
-        sub[ i ,one, f ]
+        sqrt[ i ,one ]
     ]
     }
 "
@@ -245,4 +245,4 @@ let parsedProgram = parseCrn program3
 let (CRN x) = parsedProgram
 let (reactions, initial) = compile x
 
-reactionSimulatorPlot initial reactions 0.1 400
+reactionSimulatorPlot initial reactions 0.1 10

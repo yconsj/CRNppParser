@@ -64,7 +64,6 @@ module Simulator =
                 Some(arrayToState species newStateVector, newStateVector))
             initialConcsVector
 
-
     let reactionSimulatorPlot (initialConcs: State) (reactions: RxnS list) (timeStepSize: float) (timeSteps: int) =
         // timeResolution: how detailed the values are generated. value of >0
         // timeStep: Total number of time units to calculate the state. Value of >1
