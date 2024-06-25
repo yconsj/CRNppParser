@@ -1,0 +1,406 @@
+{
+  "version": 3,
+  "targets": {
+    "net7.0": {
+      "DynamicObj/2.0.0": {
+        "type": "package",
+        "dependencies": {
+          "FSharp.Core": "6.0.2",
+          "Newtonsoft.Json": "13.0.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/DynamicObj.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/DynamicObj.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "FParsec/1.1.1": {
+        "type": "package",
+        "dependencies": {
+          "FSharp.Core": "4.3.4"
+        },
+        "compile": {
+          "lib/netstandard2.0/FParsec.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/netstandard2.0/FParsecCS.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/FParsec.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/netstandard2.0/FParsecCS.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
+      "FSharp.Core/7.0.200": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.1/FSharp.Core.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.1/FSharp.Core.dll": {
+            "related": ".xml"
+          }
+        },
+        "resource": {
+          "lib/netstandard2.1/cs/FSharp.Core.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/netstandard2.1/de/FSharp.Core.resources.dll": {
+            "locale": "de"
+          },
+          "lib/netstandard2.1/es/FSharp.Core.resources.dll": {
+            "locale": "es"
+          },
+          "lib/netstandard2.1/fr/FSharp.Core.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/netstandard2.1/it/FSharp.Core.resources.dll": {
+            "locale": "it"
+          },
+          "lib/netstandard2.1/ja/FSharp.Core.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/netstandard2.1/ko/FSharp.Core.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/netstandard2.1/pl/FSharp.Core.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/netstandard2.1/pt-BR/FSharp.Core.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/netstandard2.1/ru/FSharp.Core.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/netstandard2.1/tr/FSharp.Core.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/netstandard2.1/zh-Hans/FSharp.Core.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/netstandard2.1/zh-Hant/FSharp.Core.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "Giraffe.ViewEngine/1.4.0": {
+        "type": "package",
+        "dependencies": {
+          "FSharp.Core": "5.0.0"
+        },
+        "compile": {
+          "lib/net5.0/Giraffe.ViewEngine.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net5.0/Giraffe.ViewEngine.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
+      "MathNet.Numerics/5.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/MathNet.Numerics.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/MathNet.Numerics.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Newtonsoft.Json/13.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Plotly.NET/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "DynamicObj": "2.0.0",
+          "FSharp.Core": "6.0.2",
+          "Giraffe.ViewEngine": "1.4.0",
+          "Newtonsoft.Json": "13.0.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/Plotly.NET.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Plotly.NET.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DynamicObj/2.0.0": {
+      "sha512": "26GDec7PIgj/vyRGk+Ijogk2PU24ltqy9s2fQudJtXik0nLU56Ydq/XXNYWMRBxn9HtFiSFigOMQ3yZ2HavnVA==",
+      "type": "package",
+      "path": "dynamicobj/2.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "dynamicobj.2.0.0.nupkg.sha512",
+        "dynamicobj.nuspec",
+        "lib/netstandard2.0/DynamicObj.dll",
+        "lib/netstandard2.0/DynamicObj.xml"
+      ]
+    },
+    "FParsec/1.1.1": {
+      "sha512": "Wdjf/gCNLEwd+0nUCDh9jAIIcKGwfhRramySTnTcVVgNC6i4Vp5aJklUJJfvFkEZMYNZEDGcI8pCa36/TmwmSg==",
+      "type": "package",
+      "path": "fparsec/1.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "fparsec.1.1.1.nupkg.sha512",
+        "fparsec.nuspec",
+        "lib/net45/FParsec.dll",
+        "lib/net45/FParsec.pdb",
+        "lib/net45/FParsec.xml",
+        "lib/net45/FParsecCS.dll",
+        "lib/net45/FParsecCS.pdb",
+        "lib/net45/FParsecCS.xml",
+        "lib/netstandard2.0/FParsec.dll",
+        "lib/netstandard2.0/FParsec.pdb",
+        "lib/netstandard2.0/FParsec.xml",
+        "lib/netstandard2.0/FParsecCS.dll",
+        "lib/netstandard2.0/FParsecCS.pdb",
+        "lib/netstandard2.0/FParsecCS.xml"
+      ]
+    },
+    "FSharp.Core/7.0.200": {
+      "sha512": "NmgUnpNH6Zu9B0SPIhojyo38gnPdkdYFYQfbd6zosEH32kbGY/g/Klk7PfOWe1NAe/O1YOMmK9KhwQ2OWsWEbg==",
+      "type": "package",
+      "path": "fsharp.core/7.0.200",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "fsharp.core.7.0.200.nupkg.sha512",
+        "fsharp.core.nuspec",
+        "lib/netstandard2.0/FSharp.Core.dll",
+        "lib/netstandard2.0/FSharp.Core.xml",
+        "lib/netstandard2.0/cs/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/de/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/es/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/fr/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/it/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/ja/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/ko/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/pl/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/pt-BR/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/ru/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/tr/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/zh-Hans/FSharp.Core.resources.dll",
+        "lib/netstandard2.0/zh-Hant/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/FSharp.Core.dll",
+        "lib/netstandard2.1/FSharp.Core.xml",
+        "lib/netstandard2.1/cs/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/de/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/es/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/fr/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/it/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/ja/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/ko/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/pl/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/pt-BR/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/ru/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/tr/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/zh-Hans/FSharp.Core.resources.dll",
+        "lib/netstandard2.1/zh-Hant/FSharp.Core.resources.dll"
+      ]
+    },
+    "Giraffe.ViewEngine/1.4.0": {
+      "sha512": "gWzlp8KGDLaPHMm/xGzfLT1e9wZaJhBKhEuMsPRBSn7wAMkSgMcaqJlWl8mFGCcOOx0r9UyDJvCJJQyljYmo+g==",
+      "type": "package",
+      "path": "giraffe.viewengine/1.4.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "giraffe-64x64.png",
+        "giraffe.viewengine.1.4.0.nupkg.sha512",
+        "giraffe.viewengine.nuspec",
+        "lib/net5.0/Giraffe.ViewEngine.dll",
+        "lib/net5.0/Giraffe.ViewEngine.pdb",
+        "lib/net5.0/Giraffe.ViewEngine.xml",
+        "lib/netstandard2.0/Giraffe.ViewEngine.dll",
+        "lib/netstandard2.0/Giraffe.ViewEngine.pdb",
+        "lib/netstandard2.0/Giraffe.ViewEngine.xml"
+      ]
+    },
+    "MathNet.Numerics/5.0.0": {
+      "sha512": "pg1W2VwaEQMAiTpGK840hZgzavnqjlCMTVSbtVCXVyT+7AX4mc1o89SPv4TBlAjhgCOo9c1Y+jZ5m3ti2YgGgA==",
+      "type": "package",
+      "path": "mathnet.numerics/5.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/net461/MathNet.Numerics.dll",
+        "lib/net461/MathNet.Numerics.xml",
+        "lib/net48/MathNet.Numerics.dll",
+        "lib/net48/MathNet.Numerics.xml",
+        "lib/net5.0/MathNet.Numerics.dll",
+        "lib/net5.0/MathNet.Numerics.xml",
+        "lib/net6.0/MathNet.Numerics.dll",
+        "lib/net6.0/MathNet.Numerics.xml",
+        "lib/netstandard2.0/MathNet.Numerics.dll",
+        "lib/netstandard2.0/MathNet.Numerics.xml",
+        "mathnet.numerics.5.0.0.nupkg.sha512",
+        "mathnet.numerics.nuspec"
+      ]
+    },
+    "Newtonsoft.Json/13.0.1": {
+      "sha512": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
+      "type": "package",
+      "path": "newtonsoft.json/13.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/netstandard1.0/Newtonsoft.Json.dll",
+        "lib/netstandard1.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.3/Newtonsoft.Json.dll",
+        "lib/netstandard1.3/Newtonsoft.Json.xml",
+        "lib/netstandard2.0/Newtonsoft.Json.dll",
+        "lib/netstandard2.0/Newtonsoft.Json.xml",
+        "newtonsoft.json.13.0.1.nupkg.sha512",
+        "newtonsoft.json.nuspec",
+        "packageIcon.png"
+      ]
+    },
+    "Plotly.NET/4.0.0": {
+      "sha512": "5MBzijtCylmEDsVH0mNYlDM/hQr25ELtHBt7Evr9srsCOs5pU3NFACED0MAhHxzPCQpINjMcBQynrzgkV9KdqQ==",
+      "type": "package",
+      "path": "plotly.net/4.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/Plotly.NET.dll",
+        "lib/netstandard2.0/Plotly.NET.pdb",
+        "lib/netstandard2.0/Plotly.NET.xml",
+        "logo.png",
+        "plotly.net.4.0.0.nupkg.sha512",
+        "plotly.net.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net7.0": [
+      "FParsec >= 1.1.1",
+      "FSharp.Core >= 7.0.200",
+      "MathNet.Numerics >= 5.0.0",
+      "Plotly.NET >= 4.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\simon\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\simon\\OneDrive\\DTU\\Kandidat\\Applied Functional Programming\\CRNppParser\\CRNpp\\CRNpp.fsproj",
+      "projectName": "CRNpp",
+      "projectPath": "C:\\Users\\simon\\OneDrive\\DTU\\Kandidat\\Applied Functional Programming\\CRNppParser\\CRNpp\\CRNpp.fsproj",
+      "packagesPath": "C:\\Users\\simon\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\simon\\OneDrive\\DTU\\Kandidat\\Applied Functional Programming\\CRNppParser\\CRNpp\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\simon\\AppData\\Roaming\\NuGet\\NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net7.0"
+      ],
+      "sources": {
+        "C:\\Program Files\\dotnet\\sdk\\7.0.203\\FSharp\\library-packs": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "projectReferences": {}
+        }
+      }
+    },
+    "frameworks": {
+      "net7.0": {
+        "targetAlias": "net7.0",
+        "dependencies": {
+          "FParsec": {
+            "target": "Package",
+            "version": "[1.1.1, )",
+            "generatePathProperty": true
+          },
+          "FSharp.Core": {
+            "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
+            "target": "Package",
+            "version": "[7.0.200, )",
+            "generatePathProperty": true
+          },
+          "MathNet.Numerics": {
+            "target": "Package",
+            "version": "[5.0.0, )",
+            "generatePathProperty": true
+          },
+          "Plotly.NET": {
+            "target": "Package",
+            "version": "[4.0.0, )",
+            "generatePathProperty": true
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
