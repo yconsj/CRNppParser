@@ -4,13 +4,10 @@ namespace Interpreter
 
 module Compiler =
     open Parser
-    open MathNet.Numerics.OdeSolvers
-    open MathNet.Numerics.LinearAlgebra
-    open Parser
-    open Plotter
 
     let table1 m n catalystL =
         let clockSpecies = "_X" + n.ToString()
+
 
         match m with
         | LD(A, B) ->
@@ -44,30 +41,26 @@ module Compiler =
             let YltX = "_YltX"
             let Bx = "_Bx"
             let By = "_By"
-            let epsX = "_epsX"
-            let epsY = "_epsY"
-            let epsilon = "_epsilon"
-
             let nextClockSpecies = "_X" + (n + 1).ToString()
 
 
 
             // add epsilon X
-            [ RxnS(catalystL @ [ clockSpecies; X ], catalystL @ [ clockSpecies; X; epsX ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; epsilon ], catalystL @ [ clockSpecies; epsilon; epsX ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; epsX ], catalystL @ [ clockSpecies ], 1) ]
+            [ RxnS(catalystL @ [ clockSpecies; X ], catalystL @ [ clockSpecies; X; "_epsX" ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; "_epsilon" ], catalystL @ [ clockSpecies; "_epsilon"; "_epsX" ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; "_epsX" ], catalystL @ [ clockSpecies ], 1) ]
 
 
             // add epsilon Y
-            @ [ RxnS(catalystL @ [ clockSpecies; Y ], catalystL @ [ clockSpecies; Y; epsY ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; epsilon ], catalystL @ [ clockSpecies; epsilon; epsY ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; epsY ], catalystL @ [ clockSpecies ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; Y ], catalystL @ [ clockSpecies; Y; "_epsY" ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; "_epsilon" ], catalystL @ [ clockSpecies; "_epsilon"; "_epsY" ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; "_epsY" ], catalystL @ [ clockSpecies ], 1) ]
             // cmp
             @ [ RxnS(catalystL @ [ clockSpecies; XgtY; Y ], catalystL @ [ clockSpecies; XltY; Y ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; XltY; epsX ], catalystL @ [ clockSpecies; XgtY; epsX ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; XltY; "_epsX" ], catalystL @ [ clockSpecies; XgtY; "_epsX" ], 1) ]
 
             @ [ RxnS(catalystL @ [ clockSpecies; YgtX; X ], catalystL @ [ clockSpecies; YltX; X ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; YltX; epsY ], catalystL @ [ clockSpecies; YgtX; epsY ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; YltX; "_epsY" ], catalystL @ [ clockSpecies; YgtX; "_epsY" ], 1) ]
 
             // CRN8
             // move to next step
@@ -103,7 +96,12 @@ module Compiler =
         | Conditional(IfLE(x)) :: t ->
             (compileStep x clockSpecies ("_YgtX" :: catalysts))
             @ compileStep t clockSpecies catalysts
-        | _ -> []
+        | Rxn(x, y, v) :: t ->
+            let clockSpeciesName = "_X" + clockSpecies.ToString()
+
+            [ RxnS([ clockSpeciesName ] @ catalysts @ x, [ clockSpeciesName ] @ catalysts @ y, v) ]
+            @ compileStep t clockSpecies catalysts
+        | _ -> failwith "undefined command"
 
     let intilizeClockSpecies n =
         let rec initializeClockSpecies' i n =
@@ -133,17 +131,18 @@ module Compiler =
         | Conc(x) :: t -> nSteps t
         | Step(x) :: t -> 1 + nSteps t
 
-    let compile stps =
-        let nSteps = nSteps stps
+    let compile crn =
+        let (CRN roots) = parseCrn crn
+        let nSteps = nSteps roots
 
         let rec compileSteps stps' n =
             match stps' with
             | [] -> []
             | Step(stp) :: t -> compileStep stp (n) [] @ compileSteps t (n + 3)
-            | Conc(x) :: t -> compileSteps t (n)
+            | Conc(x) :: t -> compileSteps t (n) // skip conc
 
 
-        let reactions = intilizeClockSpecies (3 * nSteps) @ (compileSteps stps 3)
+        let reactions = intilizeClockSpecies (3 * nSteps) @ (compileSteps roots 3)
 
         let x =
             List.fold
@@ -159,7 +158,7 @@ module Compiler =
             | Conc(x, y) :: t -> compileInitialConcs t (Map.add x y state)
             | Step(x) :: t -> compileInitialConcs t state
 
-        let initialConcs = compileInitialConcs stps initialConcs
+        let initialConcs = compileInitialConcs roots initialConcs
         // add clocks
         let rec clockConcs n v acc =
 
@@ -167,12 +166,12 @@ module Compiler =
             | 1 -> acc
             | n -> clockConcs (n - 1) v (Map.add ("_X" + n.ToString()) v acc)
 
-        let v = 0.00000001
-        let startC = (1.0 - (v * (float (nSteps - 2)))) / 2.0
+        let v = 0.000000001
+        let startC = ((2.0 - (v * (float (nSteps * 3)))) / 2.0) + v
         let initialConcs = (clockConcs (3 * nSteps) v initialConcs)
 
         let initialConcs =
-            Map.add ("_X" + nSteps.ToString()) startC (Map.add "_X1" startC initialConcs)
+            Map.add ("_X" + (nSteps * 3).ToString()) startC (Map.add "_X1" startC initialConcs)
 
         let XgtY = "_XgtY"
         let XltY = "_XltY"
