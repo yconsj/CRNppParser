@@ -41,26 +41,30 @@ module Compiler =
             let YltX = "_YltX"
             let Bx = "_Bx"
             let By = "_By"
-            let nextClockSpecies = "_X" + (n + 1).ToString()
+            let epsilon = "_epsilon"
+            let epsX = "_epsX"
+            let epsY = "_epsY"
+            let nextClockSpecies = "_X" + (n + 3).ToString()
 
 
 
             // add epsilon X
-            [ RxnS(catalystL @ [ clockSpecies; X ], catalystL @ [ clockSpecies; X; "_epsX" ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; "_epsilon" ], catalystL @ [ clockSpecies; "_epsilon"; "_epsX" ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; "_epsX" ], catalystL @ [ clockSpecies ], 1) ]
+            [ RxnS(catalystL @ [ clockSpecies; X ], catalystL @ [ clockSpecies; X; epsX ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; epsilon ], catalystL @ [ clockSpecies; epsilon; epsX ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; epsX ], catalystL @ [ clockSpecies ], 1) ]
 
 
             // add epsilon Y
-            @ [ RxnS(catalystL @ [ clockSpecies; Y ], catalystL @ [ clockSpecies; Y; "_epsY" ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; "_epsilon" ], catalystL @ [ clockSpecies; "_epsilon"; "_epsY" ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; "_epsY" ], catalystL @ [ clockSpecies ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; Y ], catalystL @ [ clockSpecies; Y; epsY ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; epsilon ], catalystL @ [ clockSpecies; epsilon; epsY ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; epsY ], catalystL @ [ clockSpecies ], 1) ]
+
             // cmp
             @ [ RxnS(catalystL @ [ clockSpecies; XgtY; Y ], catalystL @ [ clockSpecies; XltY; Y ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; XltY; "_epsX" ], catalystL @ [ clockSpecies; XgtY; "_epsX" ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; XltY; epsX ], catalystL @ [ clockSpecies; XgtY; epsX ], 1) ]
 
             @ [ RxnS(catalystL @ [ clockSpecies; YgtX; X ], catalystL @ [ clockSpecies; YltX; X ], 1) ]
-            @ [ RxnS(catalystL @ [ clockSpecies; YltX; "_epsY" ], catalystL @ [ clockSpecies; YgtX; "_epsY" ], 1) ]
+            @ [ RxnS(catalystL @ [ clockSpecies; YltX; epsY ], catalystL @ [ clockSpecies; YgtX; epsY ], 1) ]
 
             // CRN8
             // move to next step

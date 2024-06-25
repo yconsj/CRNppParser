@@ -20,6 +20,7 @@ module Parser =
     type CommandS =
         | Module of ModuleS
         | Conditional of ConditionalS
+        | Rxn of RxnS
 
     and ConditionalS =
         | IfGT of CommandSList
