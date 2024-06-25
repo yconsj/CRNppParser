@@ -1,3 +1,6 @@
+// @author Simon Janum
+// @author August Valentin
+// @date 26/6/2024
 namespace CRNpp
 
 module Interpreter =
@@ -119,7 +122,7 @@ module Interpreter =
 
         let (CRN rl) = parseCrn program
 
-        match TypeChecker(CRN rl) with
+        match typeChecker (CRN rl) with
         | Some(x) -> failwith x
         | None ->
             let variables = intializeVariables rl

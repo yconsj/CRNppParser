@@ -1,3 +1,6 @@
+// @author Simon Janum
+// @author August Valentin
+// @date 26/6/2024
 #r "CRNpp\\Library\\net7.0\\CRNpp.dll"
 #r "nuget: Plotly.NET, 4.0.0"
 #r "nuget: MathNet.Numerics, 5.0.0"

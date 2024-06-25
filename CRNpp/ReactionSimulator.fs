@@ -1,3 +1,6 @@
+// @author Simon Janum
+// @author August Valentin
+// @date 26/6/2024
 namespace CRNpp
 
 module Simulator =

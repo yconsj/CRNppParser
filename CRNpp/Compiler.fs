@@ -1,3 +1,6 @@
+// @author Simon Janum
+// @author August Valentin
+// @date 26/6/2024
 namespace CRNpp
 
 module Compiler =
@@ -134,7 +137,7 @@ module Compiler =
     let compile crn =
         let (CRN rl) = parseCrn crn
 
-        match TypeChecker(CRN rl) with
+        match typeChecker (CRN rl) with
         | Some(x) -> failwith x
         | None ->
             let nSteps = nSteps rl

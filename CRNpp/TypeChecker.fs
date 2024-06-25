@@ -1,3 +1,6 @@
+// @author Simon Janum
+// @author August Valentin
+// @date 26/6/2024
 namespace CRNpp
 
 module TypeChecker =
@@ -30,7 +33,7 @@ module TypeChecker =
 
     type Env = Map<Species, Number> * CMPflag * STEPflag * CMPinStepflag // initialized variables, has executed a CMP, has executed a Step
 
-    let TypeChecker root =
+    let typeChecker root =
         let isValidName (sp: Species) =
             if (Seq.head sp) = '_' then false else true
 
