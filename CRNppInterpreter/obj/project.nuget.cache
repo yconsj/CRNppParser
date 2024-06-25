@@ -1,16 +1,19 @@
 {
   "version": 2,
-  "dgSpecHash": "qY/P50cxmYocZQ9W6E8WBxQbRzbwOmStXioMub5C8FstiuiHvQxdNW1ohjzP+LH3neqGxKmdphgDhNPV5ZGcsg==",
+  "dgSpecHash": "XmwvyqsmmoA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\simon\\OneDrive\\DTU\\Kandidat\\Applied Functional Programming\\CRNppParser\\CRNppInterpreter\\CRNppInterpreter.fsproj",
+  "projectFilePath": "C:\\Users\\augus\\Desktop\\Main folder\\University\\Master\\4. Semester\\AppliedFunctionalProgramming\\FsharpCRNpp\\CRNppParser\\CRNppInterpreter\\CRNppInterpreter.fsproj",
   "expectedPackageFiles": [
-    "C:\\Users\\simon\\.nuget\\packages\\dynamicobj\\2.0.0\\dynamicobj.2.0.0.nupkg.sha512",
-    "C:\\Users\\simon\\.nuget\\packages\\fparsec\\1.1.1\\fparsec.1.1.1.nupkg.sha512",
-    "C:\\Users\\simon\\.nuget\\packages\\fsharp.core\\7.0.200\\fsharp.core.7.0.200.nupkg.sha512",
-    "C:\\Users\\simon\\.nuget\\packages\\giraffe.viewengine\\1.4.0\\giraffe.viewengine.1.4.0.nupkg.sha512",
-    "C:\\Users\\simon\\.nuget\\packages\\mathnet.numerics\\5.0.0\\mathnet.numerics.5.0.0.nupkg.sha512",
-    "C:\\Users\\simon\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
-    "C:\\Users\\simon\\.nuget\\packages\\plotly.net\\4.0.0\\plotly.net.4.0.0.nupkg.sha512"
+    "C:\\Users\\augus\\.nuget\\packages\\dynamicobj\\2.0.0\\dynamicobj.2.0.0.nupkg.sha512",
+    "C:\\Users\\augus\\.nuget\\packages\\fparsec\\1.1.1\\fparsec.1.1.1.nupkg.sha512",
+    "C:\\Users\\augus\\.nuget\\packages\\fsharp.core\\8.0.300\\fsharp.core.8.0.300.nupkg.sha512",
+    "C:\\Users\\augus\\.nuget\\packages\\giraffe.viewengine\\1.4.0\\giraffe.viewengine.1.4.0.nupkg.sha512",
+    "C:\\Users\\augus\\.nuget\\packages\\mathnet.numerics\\5.0.0\\mathnet.numerics.5.0.0.nupkg.sha512",
+    "C:\\Users\\augus\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\augus\\.nuget\\packages\\plotly.net\\4.0.0\\plotly.net.4.0.0.nupkg.sha512",
+    "C:\\Users\\augus\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.20\\microsoft.netcore.app.ref.7.0.20.nupkg.sha512",
+    "C:\\Users\\augus\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.20\\microsoft.windowsdesktop.app.ref.7.0.20.nupkg.sha512",
+    "C:\\Users\\augus\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.20\\microsoft.aspnetcore.app.ref.7.0.20.nupkg.sha512"
   ],
   "logs": []
 }

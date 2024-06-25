@@ -39,6 +39,9 @@ module Simulator =
         let resolution = 5
         RungeKutta.SecondOrder(initialConcs, 0.0, timeStepSize, resolution, odeFunc)
 
+    let floatFloor input floor =
+        if input < floor then floor else input
+
     // Infinite sequence of states using ODE solver
     let reactionSimulator (initialConcs: State) (reactions: RxnS list) (timeStepSize: float) =
         let species = List.ofSeq initialConcs.Keys
@@ -57,8 +60,10 @@ module Simulator =
             (fun stateVector ->
                 let newStateArray = solveStep stateVector reactions species timeStepSize
                 let newStateVector = newStateArray.[newStateArray.Length - 1] // Take the last state in the array
+                let newStateVector = newStateVector.Map (fun x -> floatFloor x 0.0 ) // dont allow negative concentrations
                 Some(arrayToState species newStateVector, newStateVector))
             initialConcsVector
+
 
     let reactionSimulatorPlot (initialConcs: State) (reactions: RxnS list) (timeStepSize: float) (timeSteps: int) =
         // timeResolution: how detailed the values are generated. value of >0

@@ -9,9 +9,9 @@ open MathNet.Numerics.OdeSolvers
 open MathNet.Numerics.LinearAlgebra
 open Interpreter.Parser
 open Interpreter.Plotter
-
-
 type State = Map<Species, Number>
+
+
 
 open System
 
@@ -68,7 +68,7 @@ let reactionSimulator (initialConcs: State) (reactions: RxnS list) (timeStepSize
         (fun stateVector ->
             let newStateArray = solveStep stateVector reactions species timeStepSize
             let newStateVector = newStateArray.[newStateArray.Length - 1] // Take the last state in the array
-            let newStateVector = newStateVector.Map (fun x -> floatFloor x 0.001 )
+            let newStateVector = newStateVector.Map (fun x -> floatFloor x 0.0 )
             Some(arrayToState species newStateVector, newStateVector))
         initialConcsVector
 
@@ -106,7 +106,7 @@ let fig4OscReaction: RxnS list =
 // reactionSimulatorPlot  fig4OscConcs fig4OscReaction 0.5 100
 
 let divConcs : State = Map([
-    ("A",10);("B",10);("C",0);
+    ("A",2.861216016);("B",5.617601772);("C",1.571579466);
 
 ])
 let divReactions : RxnS list = [
@@ -114,22 +114,22 @@ let divReactions : RxnS list = [
     RxnS(["B";"C"],["B"],1);
     
 ]
-reactionSimulatorPlot  divConcs divReactions 0.1 100
+// reactionSimulatorPlot  divConcs divReactions 1 100
 
 
-let exampleSubConcs : State = Map([("A",5.0);("B",500.0);("C",0.0);("H",0.0)])
+let exampleSubConcs : State = Map([("A",1.0);("B",60.0);("C",0.0);("H",0.0)])
 let exampleSubReactions : RxnS list = [RxnS(["A"],["A";"C"],1);
     RxnS(["B"],["B";"H"],1);
     RxnS(["C"],[],1);
     RxnS(["C";"H"],[],1)]
-reactionSimulatorPlot  exampleSubConcs exampleSubReactions 0.1 100
+reactionSimulatorPlot  exampleSubConcs exampleSubReactions 0.01 100
 
 
 let exampleSqrtConcs : State = Map([("A",144.0);("B",0.0);])
 let exampleSqrtReactions : RxnS list = [RxnS(["A"],["A";"B"],1);
     RxnS(["B";"B"],[],0.5)]
 
-reactionSimulatorPlot  exampleSqrtConcs exampleSqrtReactions 0.1 100
+// reactionSimulatorPlot  exampleSqrtConcs exampleSqrtReactions 0.1 100
 
 
 
@@ -145,26 +145,5 @@ let exampleSqrtAddReactions : RxnS list = [
     RxnS(["D";"D"],[],0.5)
     ]
 
-reactionSimulatorPlot  exampleSqrtAddConcs exampleSqrtAddReactions 0.1 100
+// reactionSimulatorPlot  exampleSqrtAddConcs exampleSqrtAddReactions 0.1 100
 
-/// step[]
-/// step[... cmp ...]
-/// -> virtual step for second part of cmp
-/// step[
-///
-///     ifGT[XgtY&clockspecies
-///     // XgtY & XltY
-///     // [XgtY] * [XltY]
-///  ]
-/// ]
-///
-/// // 4 * 3 clock species
-/// // 4 * 3 clock species
-/// // 4 * 3 clock species
-/// // 4 * 3 clock species
-/// // 4 * 3 clock species
-/// // 4 * 3 clock species
-/// // 4 * 3 clock species
-/// // 4 * 3 clock species
-/// // 4 * 3 clock species
-/// // 4 * 3 clock species
