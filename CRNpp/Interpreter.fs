@@ -117,10 +117,10 @@ module Interpreter =
         | [] -> state
 
 
-    let interpretProgram (program) =
+    let interpretProgram (programAST) =
 
 
-        let (CRN rl) = parseCrn program
+        let (CRN rl) = programAST
 
         match typeChecker (CRN rl) with
         | Some(x) -> failwith x
@@ -138,3 +138,5 @@ module Interpreter =
                     (0, s0)
 
             Seq.append (Seq.singleton s0) s
+
+    let parseAndInterpret program = interpretProgram (parseCrn program)

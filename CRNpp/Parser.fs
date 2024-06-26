@@ -55,7 +55,7 @@ module Parser =
 
     let pCommandSList, pCommandSListRef = createParserForwardedToRef ()
     let token p = p .>> spaces
-    let symbol s = token (pstring s)
+
 
     let ident =
         let charOrDigit c = isLetter c || isDigit c

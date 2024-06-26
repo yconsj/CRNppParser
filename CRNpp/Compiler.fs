@@ -46,7 +46,7 @@ module Compiler =
             let epsilon = "_epsilon"
             let epsX = "_epsX"
             let epsY = "_epsY"
-            let nextClockSpecies = "_X" + (n + 1).ToString()
+            let nextClockSpecies = "_X" + (n + 2).ToString()
 
 
 
@@ -134,8 +134,8 @@ module Compiler =
         | Conc(x) :: t -> nSteps t
         | Step(x) :: t -> 1 + nSteps t
 
-    let compile crn =
-        let (CRN rl) = parseCrn crn
+    let compile crnAST =
+        let (CRN rl) = crnAST
 
         match typeChecker (CRN rl) with
         | Some(x) -> failwith x
@@ -192,3 +192,5 @@ module Compiler =
             let initialConcs = Map.add epsilon 0.5 initialConcs
             let initialConcs = Map.add "_epsY" 0.0 (Map.add "_epsX" 0.0 initialConcs)
             (reactions, initialConcs)
+
+    let parseAndCompile crn = compile (parseCrn crn)
