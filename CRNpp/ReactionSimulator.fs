@@ -58,13 +58,13 @@ module Simulator =
 
             Map.ofList stateList
 
-        Seq.unfold
+        Seq.append (Seq.singleton initialConcs) (Seq.unfold
             (fun stateVector ->
                 let newStateArray = solveStep stateVector reactions species timeStepSize
                 let newStateVector = newStateArray.[newStateArray.Length - 1] // Take the last state in the array
                 let newStateVector = newStateVector.Map(fun x -> floatFloor x 0.0) // dont allow negative concentrations
                 Some(arrayToState species newStateVector, newStateVector))
-            initialConcsVector
+            initialConcsVector)
 
     let reactionSimulatorPlot (initialConcs: State) (reactions: RxnS list) (timeStepSize: float) (timeSteps: int) =
         // timeResolution: how detailed the values are generated. value of >0
