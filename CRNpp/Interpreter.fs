@@ -35,7 +35,7 @@ module Interpreter =
 
         | LD(s1, s2) -> Map.add s2 (Map.find s1 state) state
 
-        | SQRT(s1, s2) -> Map.add s1 (sqrt (Map.find s2 state)) state
+        | SQRT(s1, s2) -> Map.add s2 (sqrt (Map.find s1 state)) state
 
         | CMP(s1, s2) ->
             let (v1, v2) = (Map.find s1 state, Map.find s2 state)
