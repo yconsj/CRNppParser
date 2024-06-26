@@ -13,6 +13,9 @@ open FsCheck
 open FsCheck.FSharp
 open FsUnit
 
+open System.Globalization
+// required to generate the expected float format:
+CultureInfo.CurrentCulture <- CultureInfo.GetCultureInfo("en-US") 
 
 
 let testProgram =
@@ -26,8 +29,6 @@ let testProgram =
      }  
     
     "
-
-open System
 
 
 let genVal =
@@ -52,7 +53,7 @@ let genSub =
 
     }
 
-let geCondVal =
+let genCondVal =
     gen {
         let! r =
             Gen.where
@@ -95,10 +96,11 @@ let testEuler (x: Number, y: Number, z: Number) =
 
     let interpreted = parseAndInterpret program
     let (r, i) = (parseAndCompile program)
-    let compiled = reactionSimulator i r 0.5
+    let compStepSize = 0.5
+    let compSteps = 250.0
+    let compiled = reactionSimulator i r compStepSize
 
-
-    let cSteady = Seq.item 1000 compiled
+    let cSteady = Seq.item (int(compSteps/compStepSize)) compiled
     let iSteady = Seq.item 200 interpreted
 
     let errorRate = 0.1
@@ -123,10 +125,12 @@ let testEQ (x: Number, y: Number, z: Number) =
 
     let interpreted = parseAndInterpret program
     let (r, i) = (parseAndCompile program)
-    let compiled = reactionSimulator i r 0.1
 
+    let compStepSize = 0.5
+    let compSteps = 250.0
+    let compiled = reactionSimulator i r compStepSize
 
-    let cSteady = Seq.item 500 compiled
+    let cSteady = Seq.item (int(compSteps/compStepSize)) compiled
     let iSteady = Seq.item 1 interpreted
 
     let errorRate = 0.1
@@ -148,10 +152,11 @@ let testAdd (x: Number, y: Number, z: Number) =
 
     let interpreted = parseAndInterpret program
     let (r, i) = (parseAndCompile program)
-    let compiled = reactionSimulator i r 0.1
+    let compStepSize = 0.5
+    let compSteps = 250.0
+    let compiled = reactionSimulator i r compStepSize
 
-
-    let cSteady = Seq.item 500 compiled
+    let cSteady = Seq.item (int(compSteps/compStepSize)) compiled
     let iSteady = Seq.item 1 interpreted
 
     let errorRate = 0.1
@@ -173,10 +178,11 @@ let testMul (x: Number, y: Number, z: Number) =
 
     let interpreted = parseAndInterpret program
     let (r, i) = (parseAndCompile program)
-    let compiled = reactionSimulator i r 0.1
+    let compStepSize = 0.5
+    let compSteps = 250.0
+    let compiled = reactionSimulator i r compStepSize
 
-
-    let cSteady = Seq.item 500 compiled
+    let cSteady = Seq.item (int(compSteps/compStepSize)) compiled
     let iSteady = Seq.item 1 interpreted
 
     let errorRate = 0.5
@@ -197,10 +203,12 @@ let testDiv (x: Number, y: Number, z: Number) =
 
     let interpreted = parseAndInterpret program
     let (r, i) = (parseAndCompile program)
-    let compiled = reactionSimulator i r 0.05
 
+    let compStepSize = 0.5
+    let compSteps = 250.0
+    let compiled = reactionSimulator i r compStepSize
 
-    let cSteady = Seq.item 500 compiled
+    let cSteady = Seq.item (int(compSteps/compStepSize)) compiled
     let iSteady = Seq.item 1 interpreted
 
     let errorRate = 0.1
@@ -220,10 +228,12 @@ let testSqrt (x: Number, y: Number) =
 
     let interpreted = parseAndInterpret program
     let (r, i) = (parseAndCompile program)
-    let compiled = reactionSimulator i r 0.1
+    
+    let compStepSize = 0.5
+    let compSteps = 250.0
+    let compiled = reactionSimulator i r compStepSize
 
-
-    let cSteady = Seq.item 1000 compiled
+    let cSteady = Seq.item (int(compSteps/compStepSize)) compiled
     let iSteady = Seq.item 1 interpreted
 
     let errorRate = 0.1
@@ -244,10 +254,13 @@ let testSub (x: Number, y: Number) =
 
     let interpreted = parseAndInterpret program
     let (r, i) = (parseAndCompile program)
-    let compiled = reactionSimulator i r 0.01
+
+    let compStepSize = 0.5
+    let compSteps = 250.0
+    let compiled = reactionSimulator i r compStepSize
 
 
-    let cSteady = Seq.item 5000 compiled
+    let cSteady = Seq.item (int(compSteps/compStepSize)) compiled
     let iSteady = Seq.item 1 interpreted
 
     let errorRate = 1.0
@@ -273,12 +286,12 @@ type subGenerator =
 type condGenerator =
     static member values() =
         { new Arbitrary<float * float * float>() with
-            override x.Generator = geCondVal }
+            override x.Generator = genCondVal }
 
 let config = Config.Quick.WithArbitrary([ typeof<myGenerator> ])
 let configsub = Config.Quick.WithArbitrary([ typeof<subGenerator> ])
 let configcond = Config.Quick.WithArbitrary([ typeof<condGenerator> ])
-printfn "test EQ: \n"
+printfn "test Euler: \n"
 Check.One(config, testEuler)
 printfn "test add: \n"
 Check.One(config, testAdd)
