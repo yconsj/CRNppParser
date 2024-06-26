@@ -8,43 +8,40 @@ module TypeChecker =
     open FParsec
     open System
 
-    type CMPflag = CMPflag of bool
-    type CMPinStepflag = CMPinStepflag of bool
-    type STEPflag = STEPflag of bool
-
     /// TypeChecker:
     /// Check the explicit restrictions: ✔
     /// Check CMP is executed in a step prior to ConditionalS: ✔
     /// Dont allow CMP in last step: ✔
+    /// Don't allow conditional in the same step as CMP: ✔
     /// dont allow names starting with underscore (protected names): ✔
     /// dont allow empty LHS on Rxn: ✔
     /// dont allow Conc on the same species multiple times: ✔
     /// a ConcS cannot follow after StepS: ✔
-    ///
-    /// Chosen NOT to enforce:
-    /// (Not true:) only non-conflicting commands in Steps
-    /// (Not true:) only initialized (conc) species allowed in (source-variable of?) modules
-    ///  protected symbols (such as XgtY, XltY)
-    ///
 
+    type Flags(cmpFlag: bool, stepFlag: bool, cmpInStepFlag: bool, cndInStepFlag: bool) =
+
+        member this.Cmp = cmpFlag // has executed a CMP
+        member this.Step = stepFlag // has executed a Step
+        member this.CmpInStep = cmpInStepFlag // has executed a CMP in this step
+        member this.CndInStep = cndInStepFlag // has executed a conditional in this step
 
     let lazyOptionSome opt1 opt2 =
         if Option.isSome opt1 then opt1 else opt2
 
-    type Env = Map<Species, Number> * CMPflag * STEPflag * CMPinStepflag // initialized variables, has executed a CMP, has executed a Step
 
-    let typeChecker root =
-        let isValidName (sp: Species) =
-            if (Seq.head sp) = '_' then false else true
+    type Env = Set<Species> * Flags
+
+    let TypeChecker root =
+        let isValidName (sp: Species) = not ((Seq.head sp) = '_')
 
         let conchelper (conc: ConcS) (env: Env) =
             match conc, env with
-            | _, (_, _, STEPflag(sflag), _) when sflag -> Some(sprintf "Cannot define concentrations after StepS"), env
-            | (sp, _), (map, _, _, _) when Map.containsKey sp map -> // verify species hasn't been initialized yet.
+            | _, (_, flags) when flags.Step -> Some(sprintf "Cannot define concentrations after StepS"), env
+            | (sp, _), (set, _) when Set.contains sp set -> // verify species hasn't been initialized yet.
                 Some(sprintf "Preexisting species \'%s\' in env" sp), env
             | (sp, _), _ when not (isValidName sp) ->
                 Some(sprintf "Name is not valid for \'%s\'. Name must not begin with '_'" sp), env
-            | (sp, nu), (map, cflag, sflag, cthisflag) -> None, ((Map.add sp nu map), cflag, sflag, cthisflag)
+            | (sp, nu), (set, flags) -> None, ((Set.add sp set), flags)
 
         let IsSameSpecies sA sB =
             if (sA = sB) then
@@ -65,7 +62,12 @@ module TypeChecker =
             | DIV(a, b, c), _ -> triModHelper a b c env //...
             | LD(a, b), _
             | SQRT(a, b), _ -> binModHelper a b env
-            | CMP(a, b), (map, _, sflag, cthisflag) -> binModHelper a b (map, CMPflag(true), sflag, CMPinStepflag(true))
+            | CMP(a, b), (set, flags) ->
+                if flags.CndInStep then
+                    Some(sprintf "CMP may not be executed in the same step as conditional"), env
+                else
+                    let newFlags = Flags(true, flags.Step, true, flags.CndInStep)
+                    binModHelper a b (set, newFlags)
 
         let rxnhelper (rxn: RxnS) =
             match rxn with
@@ -91,27 +93,30 @@ module TypeChecker =
 
         and conditionalhelper cond env =
             match cond, env with
-            | IfGT(cmds), (_, CMPflag(cflag), _, _)
-            | IfGE(cmds), (_, CMPflag(cflag), _, _)
-            | IfEQ(cmds), (_, CMPflag(cflag), _, _)
-            | IfLT(cmds), (_, CMPflag(cflag), _, _)
-            | IfLE(cmds), (_, CMPflag(cflag), _, _) ->
-                if not cflag then
+            | IfGT(cmds), (_, flags)
+            | IfGE(cmds), (_, flags)
+            | IfEQ(cmds), (_, flags)
+            | IfLT(cmds), (_, flags)
+            | IfLE(cmds), (_, flags) ->
+                if not flags.Cmp then
                     Some(sprintf "cannot run conditional-module before CMP-module"), env
+                else if (flags.CmpInStep) then
+                    Some(sprintf "CMP may not be executed in the same step as conditional"), env
                 else
                     let stepOpt, newEnv = stephelper cmds env
                     stepOpt, newEnv
 
         let rec rootListHelper rootList (env: Env) =
             match rootList, env with
-            | [], (_, _, _, CMPinStepflag(cmpstepflag)) when cmpstepflag -> Some("cannot run CMP in last step.")
+            | [], (_, flags) when flags.CmpInStep -> Some("cannot run CMP in last step.")
             | [], _ -> None
             | Conc(h) :: tail, _ ->
                 let (r, newEnv) = conchelper h env
                 lazyOptionSome r (rootListHelper tail newEnv)
-            | Step(h) :: tail, ((map, cflag, sflag, cmpstepflag)) ->
-                let stepOpt, newEnv = stephelper h (((map, cflag, sflag, CMPinStepflag(false))))
+            | Step(h) :: tail, ((set, flags)) ->
+                let newFlags = Flags(flags.Cmp, true, false, false)
+                let stepOpt, newEnv = stephelper h (set, newFlags)
                 lazyOptionSome stepOpt (rootListHelper tail newEnv)
 
         match root with
-        | CRN(rlist) -> rootListHelper rlist ((Map.empty, CMPflag(false), STEPflag(false), CMPinStepflag(false)): Env)
+        | CRN(rlist) -> rootListHelper rlist (Set.empty, Flags(false, false, false, false): Env)

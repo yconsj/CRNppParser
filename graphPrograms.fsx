@@ -13,6 +13,7 @@ open CRNpp.Parser
 open CRNpp.Interpreter
 open CRNpp.Plotter
 open CRNpp.Simulator
+open CRNpp.Compiler
 
 let program1 =
     "
@@ -85,7 +86,7 @@ if false then
 
     simulationPlot interpretedProgramDiscreteCounter 20
 
-if true then
+if false then
     let fig1MulConcs: State = Map([ ("A", 6.0); ("B", 2.0); ("C", 0.0); ("D", 0.0) ])
 
     let fig1MulReaction: RxnS list =
@@ -103,3 +104,4 @@ if false then
           RxnS([ "X_3"; "X_1" ], [ "X_1"; "X_1" ], 1.0) ]
 
     reactionSimulatorPlot fig4OscConcs fig4OscReaction 0.1 100
+
