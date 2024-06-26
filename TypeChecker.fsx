@@ -32,11 +32,13 @@ let lazyOptionSome opt1 opt2 =
     else
         opt2
 
-type Flags(cmpFlag : bool, stepFlag : bool, cmpInStepFlag : bool) = 
+type Flags(cmpFlag : bool, stepFlag : bool, cmpInStepFlag : bool, cndInStepFlag : bool) = 
 
     member this.Cmp = cmpFlag // has executed a CMP
     member this.Step  = stepFlag // has executed a Step
     member this.CmpInStep = cmpInStepFlag // has executed a CMP in this step
+
+    member this.CndInStep = cndInStepFlag
 
 type Env = Set<Species> * Flags
 let TypeChecker root = 
@@ -80,8 +82,11 @@ let TypeChecker root =
         | LD(a,b), _
         | SQRT(a,b), _ -> binModHelper a b env
         | CMP(a,b), (set, flags) ->
-            let newFlags = Flags(true, flags.Step, true) 
-            binModHelper a b (set, newFlags)
+            if flags.CndInStep then
+                Some(sprintf "CMP may not be executed in the same step as conditional"), env
+            else
+                let newFlags = Flags(true, flags.Step, true, flags.CndInStep) 
+                binModHelper a b (set, newFlags)
 
     let rxnhelper (rxn : RxnS) =
         match rxn with
@@ -114,7 +119,7 @@ let TypeChecker root =
             if not flags.Cmp then 
                 Some(sprintf "cannot run conditional-module before CMP-module"), env
             else if (flags.CmpInStep) then
-                Some(sprintf "cannot run conditional-module in same step as CMP-module"), env
+                Some(sprintf "CMP may not be executed in the same step as conditional"), env
             else
                 let stepOpt, newEnv = stephelper cmds env
                 stepOpt, newEnv
@@ -129,12 +134,12 @@ let TypeChecker root =
             lazyOptionSome r (rootListHelper tail newEnv)
         | Step(h)::tail, ((set, flags)) 
             ->
-            let newFlags = Flags(flags.Cmp,true,false)
+            let newFlags = Flags(flags.Cmp,true,false, false)
             let stepOpt, newEnv = stephelper h (set, newFlags)
             lazyOptionSome stepOpt (rootListHelper tail newEnv)
 
     match root with
-    | CRN(rlist) -> rootListHelper rlist (Set.empty, Flags(false,false, false) : Env)
+    | CRN(rlist) -> rootListHelper rlist (Set.empty, Flags(false,false, false, false) : Env)
 
 
 let extract p str =

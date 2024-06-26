@@ -7,12 +7,14 @@ open Interpreter.Parser
 open Interpreter.Simulator
 open Plotly.NET
 open Plotly.NET.TraceObjects
+open Plotly.NET.LayoutObjects
+
 
 type State = Map<Species, Number>
 
-if false then
+if true then
     let AddErrorPlots =
-        let x' = [0.0 .. 1.0 .. 30.0]
+        let x' = [0.0 .. 1.0 .. 100.0]
         let y' = x'
 
         let addError x y =
@@ -21,8 +23,8 @@ if false then
                 RxnS(["B"],["B";"C"],1);
                 RxnS(["C"],[],1)]
         
-            let s = reactionSimulator addConcs addReactions 1
-            let lastMap = Seq.item 100 s
+            let s = reactionSimulator addConcs addReactions 0.1
+            let lastMap = Seq.item 250 s
             let c = Map.find "C" lastMap
             
             abs (c - (x + y))
@@ -30,15 +32,19 @@ if false then
             x' |> List.map (fun x -> 
                 ( y' |> List.map (fun y -> addError x y ) )
             )
+        printfn "%A" z'
+        let contours = (Contours.initXyz( Show = true ))
         let surface =
-            Chart.Surface(zData = z', X = x', Y = y', Opacity = 0.5, Contours = Contours.initXyz (Show = true))
-        surface
+            Chart.Surface(zData = z', X = x', Y = y', Opacity = 0.5, Contours = contours)
+        let zExpAxis = LinearAxis.init(TickFormat =".1e")
+
+        surface |> Chart.withZAxis zExpAxis
 
     AddErrorPlots |> Chart.show 
 
 if false then
     let MulErrorPlots =
-        let x' = [0.0 .. 1.0 .. 30.0]
+        let x' = [0.0 .. 1.0 .. 100.0]
         let y' = x'
 
         let mulError x y =
@@ -63,9 +69,9 @@ if false then
 
     MulErrorPlots |> Chart.show 
 
-if true then
+if false then
     let SubErrorPlots =
-        let x' = [0.0 .. 1.0 .. 100.0]
+        let x' = [0.0 .. 1.0 .. 60.0]
         let y' = x'
 
          
