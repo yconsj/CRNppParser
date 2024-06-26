@@ -47,7 +47,7 @@ let solveStep (initialConcs: Vector<float>) (reactions: RxnS list) (species: Spe
     
 let floatFloor input floor =
     if input < floor then floor else input
-
+    
 // Infinite sequence of states using ODE solver
 let reactionSimulator (initialConcs: State) (reactions: RxnS list) (timeStepSize: float) =
     let species = List.ofSeq initialConcs.Keys

@@ -82,16 +82,17 @@ if false then
     let interpretedProgramDiscreteCounter = interpretProgram parsedProgramDiscreteCounter
     simulationPlot interpretedProgramDiscreteCounter 20
 
-if true then
-    let fig1MulConcs: State = Map([ ("A", 6.0); ("B", 2.0); ("C", 0.0); ("D", 0.0) ])
+if false then
+    let fig1MulConcs: State = Map([ ("A", 6.0); ("B", 2.0); ("C", 0.0) ])
     let fig1MulReaction: RxnS list = [ 
         RxnS([ "A"; "B" ], [ "A"; "B"; "C" ], 1); 
         RxnS([ "C" ], [], 1) ]
     reactionSimulatorPlot  fig1MulConcs fig1MulReaction 0.1 15
 
-if false then
+if true then
     let fig4OscConcs: State = Map([ ("X_1", 0.9999999999); ("X_2", 0.0000000002); ("X_3", 0.9999999999) ])
-
+    //9999999999
+    //0000000002
     let fig4OscReaction: RxnS list = [ 
         RxnS([ "X_1"; "X_2" ], [ "X_2"; "X_2" ], 1.0) ;
         RxnS([ "X_2"; "X_3" ], [ "X_3"; "X_3" ], 1.0) ;

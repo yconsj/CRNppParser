@@ -63,9 +63,9 @@ if false then
 
     MulErrorPlots |> Chart.show 
 
-if false then
+if true then
     let SubErrorPlots =
-        let x' = [0.0 .. 1.0 .. 60.0]
+        let x' = [0.0 .. 1.0 .. 100.0]
         let y' = x'
 
          
@@ -141,9 +141,9 @@ if false then
         
     sqrtErrorPlots |> Chart.show
 
-if true then
+if false then
     let LdErrorPlots =
-        let x' = [ 0.0..1.0..100.0 ]
+        let x' = [ 0.0..1.0..60.0 ]
 
         let ldError x =
             let concs: State = Map([ ("A", x); ("B", 0) ])
@@ -156,7 +156,6 @@ if true then
             let a = Map.find "A" lastMap
             let b = Map.find "B" lastMap
             abs (b - (x))
-
         let z' = x' |> List.map (fun x -> ldError x)
 
         Chart.Scatter(x = x',y=z', mode=StyleParam.Mode.Lines)
