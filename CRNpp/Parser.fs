@@ -149,7 +149,8 @@ module Parser =
         spaces
         >>. choice
             [ pConditionalS .>> spaces |>> fun cond -> Conditional(cond)
-              pModuleS .>> spaces |>> fun (mod) -> Module (mod) ]
+              pModuleS .>> spaces |>> fun (mod) -> Module (mod)
+              pRxnS .>> spaces |>> fun (rxn) -> Rxn(rxn) ]
 
     let pCommandSListImpl =
         sepBy1 pCommandS (spaces >>. skipString "," >>. spaces) |>> fun l -> l
