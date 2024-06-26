@@ -31,7 +31,7 @@ module TypeChecker =
 
     type Env = Set<Species> * Flags
 
-    let TypeChecker root =
+    let typeChecker root =
         let isValidName (sp: Species) = not ((Seq.head sp) = '_')
 
         let conchelper (conc: ConcS) (env: Env) =

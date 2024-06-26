@@ -14,7 +14,7 @@ open Plotly.NET.LayoutObjects
 type State = Map<Species, Number>
 
 if false then
-    let AddErrorPlots =
+    let genAddErrorPlot =
         let x' = [ 0.0..1.0..60.0 ]
         let y' = x'
 
@@ -43,11 +43,11 @@ if false then
 
         surface |> Chart.withZAxis zExpAxis
 
-    AddErrorPlots |> Chart.show
+    genAddErrorPlot |> Chart.show
     printfn "addplot"
 
 if true then
-    let MulErrorPlots =
+    let genMulErrorPlot =
         let x' = [ 0.0..1.0..60.0 ]
         let y' = x'
 
@@ -75,11 +75,11 @@ if true then
 
         surface |> Chart.withZAxis zExpAxis
 
-    MulErrorPlots |> Chart.show
+    genMulErrorPlot |> Chart.show
     printfn "mulplot"
 
 if true then
-    let SubErrorPlots =
+    let genSubErrorPlot =
         let x' = [ 0.0..1.0..60.0 ]
         let y' = x'
 
@@ -94,8 +94,8 @@ if true then
                   RxnS([ "C"; "H" ], [], 1) ]
 
 
-            let timeStepSize = 0.01
-            let steps = 2.5
+            let timeStepSize = 0.5
+            let steps = 250.0
             let s = reactionSimulator concs reactions timeStepSize
             let lastMap = Seq.item (int (steps / timeStepSize)) s
             let c = Map.find "C" lastMap
@@ -111,11 +111,11 @@ if true then
 
         surface |> Chart.withZAxis zExpAxis
 
-    SubErrorPlots |> Chart.show
+    genSubErrorPlot |> Chart.show
     printfn "subplot"
 
 if true then
-    let divErrorPlots =
+    let genDivErrorPlot =
         let x' = [ 0.0..1.0..60.0 ]
         let y' = x'
 
@@ -143,11 +143,11 @@ if true then
 
         surface |> Chart.withZAxis zExpAxis
 
-    divErrorPlots |> Chart.show
+    genDivErrorPlot |> Chart.show
     printfn "divplot"
 
 if true then
-    let sqrtErrorPlots =
+    let genSqrtErrorPlot =
         let x' = [ 0.0..1.0..60.0 ]
 
         let sqrtError x =
@@ -171,22 +171,19 @@ if true then
 
         line |> Chart.withYAxis yExpAxis
 
-    sqrtErrorPlots |> Chart.show
+    genSqrtErrorPlot |> Chart.show
     printfn "sqrtplot"
 
 if true then
-    let LdErrorPlots =
+    let genLdErrorPlot =
         let x' = [ 0.0..1.0..60.0 ]
 
         let ldError x =
-            let concs: State = Map([ ("A", x); ("B", 0); ("zero", 0) ])
+            let concs: State = Map([ ("A", x); ("B", 0) ])
 
             let reactions: RxnS list =
                 [ RxnS([ "A" ], [ "A"; "B" ], 1) ] @ [ RxnS([ "B" ], [], 1) ]
-            // let reactions: RxnS list =
-            //     [ RxnS([ "A" ], [ "A"; "B" ], 1)
-            //       RxnS([ "zero" ], [ "zero"; "B" ], 1)
-            //       RxnS([ "B" ], [], 1) ]
+
             let timeStepSize = 0.5
             let steps = 250.0
             let s = reactionSimulator concs reactions timeStepSize
@@ -202,5 +199,5 @@ if true then
 
         line |> Chart.withYAxis yExpAxis
 
-    LdErrorPlots |> Chart.show
+    genLdErrorPlot |> Chart.show
     printfn "ldplot"

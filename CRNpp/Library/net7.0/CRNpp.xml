@@ -2,22 +2,17 @@
 <doc>
 <assembly><name>CRNpp</name></assembly>
 <members>
-<member name="M:CRNpp.TypeChecker.lazyOptionSome``1(Microsoft.FSharp.Core.FSharpOption{``0},Microsoft.FSharp.Core.FSharpOption{``0})">
+<member name="T:CRNpp.TypeChecker.Flags">
 <summary>
  TypeChecker:
  Check the explicit restrictions: ✔
  Check CMP is executed in a step prior to ConditionalS: ✔
  Dont allow CMP in last step: ✔
+ Don&apos;t allow conditional in the same step as CMP: ✔
  dont allow names starting with underscore (protected names): ✔
  dont allow empty LHS on Rxn: ✔
  dont allow Conc on the same species multiple times: ✔
  a ConcS cannot follow after StepS: ✔
-
- Chosen NOT to enforce:
- (Not true:) only non-conflicting commands in Steps
- (Not true:) only initialized (conc) species allowed in (source-variable of?) modules
-  protected symbols (such as XgtY, XltY)
-
 </summary>
 </member>
 </members>

@@ -11,3 +11,17 @@ C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\
 C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNpp\obj\Debug\net7.0\CRNpp.xml
 C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNpp\obj\Debug\net7.0\CRNpp.pdb
 C:\Users\simon\OneDrive\DTU\Kandidat\Applied Functional Programming\CRNppParser\CRNpp\obj\Debug\net7.0\ref\CRNpp.dll
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\obj\Debug\net7.0\CRNpp.fsproj.AssemblyReference.cache
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\obj\Debug\net7.0\CRNpp.AssemblyInfoInputs.cache
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\obj\Debug\net7.0\CRNpp.AssemblyInfo.fs
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\obj\Debug\net7.0\CRNpp.fsproj.CoreCompileInputs.cache
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\obj\Debug\net7.0\CRNpp.sourcelink.json
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\obj\Debug\net7.0\CRNpp.dll
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\obj\Debug\net7.0\refint\CRNpp.dll
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\obj\Debug\net7.0\CRNpp.xml
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\obj\Debug\net7.0\CRNpp.pdb
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\Library\net7.0\CRNpp.deps.json
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\Library\net7.0\CRNpp.dll
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\Library\net7.0\CRNpp.pdb
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\Library\net7.0\CRNpp.xml
+C:\Users\augus\Desktop\Main folder\University\Master\4. Semester\AppliedFunctionalProgramming\FsharpCRNpp\CRNppParser\CRNpp\obj\Debug\net7.0\ref\CRNpp.dll

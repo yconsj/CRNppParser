@@ -15,27 +15,27 @@ open CRNpp.Plotter
 open CRNpp.Simulator
 open CRNpp.Compiler
 
-let program1 =
-    "
-    crn = {
-    conc[c,3 ], conc[ cInitial ,3 ],
-    conc[one ,1], conc[zero ,0],
-    step[
-    sub[c,one,cnext ],
-    cmp[c,zero]
-    ],
-    step[
-    ifGT[ ld [cnext ,c] ],
-    ifLE[ ld [ cInitial ,c] ]
-    ]
-     }  
-    
-    "
 
 if false then
-    let interpretedProgram1 = interpretProgram program1
-    printf "%A \n" interpretedProgram1
-    simulationPlot interpretedProgram1 30
+    let program1 =
+        parseAndInterpret
+            "
+        crn = {
+        conc[c,3 ], conc[ cInitial ,3 ],
+        conc[one ,1], conc[zero ,0],
+        step[
+        sub[c,one,cnext ],
+        cmp[c,zero]
+        ],
+        step[
+        ifGT[ ld [cnext ,c] ],
+        ifLE[ ld [ cInitial ,c] ]
+        ]
+        }  
+        
+        "
+
+    simulationPlot program1 30
 
 
 
@@ -43,8 +43,12 @@ if false then
 // Some programs executions may converge to a steady state (e.g. that for GCD) while
 // others will not (e.g. Discrete counter). Construct a visualization component so that
 // figures like Fig. 3(b) and Fig. 6(b) can be shown
-let programGCD =
-    "
+
+
+if false then
+    let programGCD =
+        parseAndInterpret
+            "
     crn = { 
         conc[a,32 ],
         conc[b,12 ],
@@ -60,31 +64,29 @@ let programGCD =
     };
     "
 
-if false then
-    let interpretedProgramGCD = interpretProgram programGCD
-    simulationPlot interpretedProgramGCD 10
+    simulationPlot programGCD 10
 
 
-let programDiscreteCounter =
-    " 
-    crn = {
-        conc[c,3 ], conc[ cInitial ,3],
-        conc[one ,1], conc[zero ,0],
-        step [
-            sub[c,one,cnext ],
-            cmp[c,zero ]
-        ],
-        step [
-            ifGT[  ld [cnext,c ] ],
-            ifLE [ ld [ cInitial ,c ] ]
-            ]
-    }
-     "
 
 if false then
-    let interpretedProgramDiscreteCounter = interpretProgram programDiscreteCounter
+    let programDiscreteCounter =
+        parseAndInterpret
+            " 
+        crn = {
+            conc[c,3 ], conc[ cInitial ,3],
+            conc[one ,1], conc[zero ,0],
+            step [
+                sub[c,one,cnext ],
+                cmp[c,zero ]
+            ],
+            step [
+                ifGT[  ld [cnext,c ] ],
+                ifLE [ ld [ cInitial ,c ] ]
+                ]
+        }
+    "
 
-    simulationPlot interpretedProgramDiscreteCounter 20
+    simulationPlot programDiscreteCounter 20
 
 if false then
     let fig1MulConcs: State = Map([ ("A", 6.0); ("B", 2.0); ("C", 0.0); ("D", 0.0) ])
@@ -104,4 +106,3 @@ if false then
           RxnS([ "X_3"; "X_1" ], [ "X_1"; "X_1" ], 1.0) ]
 
     reactionSimulatorPlot fig4OscConcs fig4OscReaction 0.1 100
-
